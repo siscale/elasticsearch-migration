@@ -1,0 +1,16 @@
+migrations:
+  - type: UPDATE_MAPPING
+    mapping: 'test'
+    indices:
+      - 'test_index'
+    definition: >
+          {
+            "properties": {
+              "email": {
+                "type": "keyword"
+              }
+            }
+          }
+
+
+
