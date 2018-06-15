@@ -18,7 +18,7 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 ## Indexes
 These indexes are created on the first run and are there too keep track of the migrations.
 
-### Migration version index
+### Migration version index (elasticsearch_migration_version)
 Keeping track of the executed changesets. If a migration fails it will be transitioned to state 'FAILED' and the failureMessage field will contain the reason.
 The entry won't be removed and the changes applied to this point will stay in the cluster. There is no automatic rollback which means that the cleaneup has to be done manually.
 
@@ -69,7 +69,7 @@ The entry won't be removed and the changes applied to this point will stay in th
 }
 ```
 
-### Migration lock index
+### Migration lock index (elasticsearch_migration_lock)
 Used to create a pessimistic lock during the migration so only one client makes changes at a time. 
 In case the migration is aborted for any reason the lock won't be removed and has to be removed manually.
 
@@ -215,6 +215,11 @@ final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration
 
 elasticsearchMigration.migrate();
 ```
+
+## Migration from previous un-managed schema
+1. Collect all your schema in one yaml changeset.
+2. Create 'Migration version index' and 'Migration lock index' using the schemas from above or from the source tree
+3. Startup your application manually. After it's started there will be one entry in the 'elasticsearch_migration_version' index. Copy this entry over to your staging/production ES cluster.
 
 ## Improvements
 * In case a migration is aborted in the middle the lock stays there forever. Unlock it after a TTL.
