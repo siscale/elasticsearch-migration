@@ -19,7 +19,7 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 These indexes are created on the first run and are there too keep track of the migrations.
 
 ### Migration version index
-Keeping track of the executed changesets. If a migration fails it will transitioned to state 'FAILED' and the failureMessage field will contain the reason.
+Keeping track of the executed changesets. If a migration fails it will be transitioned to state 'FAILED' and the failureMessage field will contain the reason.
 The entry won't be removed and the changes applied to this point will stay in the cluster. There is no automatic rollback which means that the cleaneup has to be done manually.
 
 ```javascript
@@ -97,7 +97,7 @@ In case the migration is aborted for any reason the lock won't be removed and ha
 ```
 
 ## YAML changesets
-The changesets are defined with versioned yaml files (V<version>__<name>.yaml)(example: V1_0_0__singularity.yaml). 
+The changesets are defined with versioned yaml files (V{version}__{name}.yaml)(example: V1_0_0__singularity.yaml). 
 The yaml files have to conform to this schema [YAML Schema](src/main/resources/schema/yaml/schema.json)
 
 ### Example changeset
