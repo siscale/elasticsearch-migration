@@ -1,0 +1,95 @@
+migrations:
+  - type: CREATE_INDEX
+    index: 'test_index'
+    definition: >
+      {
+          "settings": {
+              "number_of_shards": 3
+          },
+          "mappings": {
+              "dynamic": false,
+              "_source": {
+                  "enabled": true
+              },
+              "test": {
+                  "properties": {
+                      "user": {
+                          "type": "keyword",
+                          "index": true
+                      },
+                      "post_date": {
+                          "type": "keyword",
+                          "index": true
+                      },
+                      "message": {
+                          "type": "keyword",
+                          "index": true
+                      }
+                  }
+              }
+          }
+      }
+  - type: CREATE_OR_UPDATE_INDEX_TEMPLATE
+    template: 'test_template'
+    definition: >
+      {
+        "index_patterns": ["foo*", "bar*"],
+        "settings": {
+          "number_of_shards": 1
+        },
+        "mappings": {
+          "test": {
+            "properties": {
+              "host_name": {
+                "type": "keyword"
+              },
+              "created_at": {
+                "type": "date",
+                "format": "EEE MMM dd HH:mm:ss Z YYYY"
+              }
+            }
+          }
+        }
+      }
+  - type: UPDATE_MAPPING
+    mapping: 'test'
+    indices:
+      - 'test_index'
+    definition: >
+      {
+        "properties": {
+          "email": {
+            "type": "keyword"
+          }
+        }
+      }
+  - type: INDEX_DOCUMENT
+    index: 'test_index'
+    id: '1'
+    mapping: 'test'
+    definition: >
+      {
+          "user" : "kimchy",
+          "post_date" : "2009-11-15T14:12:12",
+          "message" : "trying out Elasticsearch"
+      }
+  - type: UPDATE_DOCUMENT
+    index: 'test_index'
+    mapping: 'test'
+    id: '1'
+    definition: >
+      {
+          "doc" : {
+              "user" : "new_user"
+          }
+      }
+  - type: DELETE_DOCUMENT
+    index: 'test_index'
+    mapping: 'test'
+    id: '1'
+  - type: DELETE_INDEX_TEMPLATE
+    template: 'test_template'
+  - type: DELETE_INDEX
+    index: 'test_index'
+
+

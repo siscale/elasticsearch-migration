@@ -1,0 +1,23 @@
+migrations:
+  - type: INDEX_DOCUMENT
+    index: 'test_index'
+    id: '1'
+    mapping: 'test'
+    definition: '{}'
+  - type: UPDATE_DOCUMENT
+    index: 'test_index'
+    mapping: 'test'
+    id: '1'
+    definition: '{}'
+  - type: DELETE_DOCUMENT
+    index: 'test_index'
+    mapping: 'test'
+    id: '1'
+  - type: DELETE_INDEX_TEMPLATE
+    template: 'test_template'
+  - type: DELETE_INDEX
+    index: 'test_index'
+
+
+
+

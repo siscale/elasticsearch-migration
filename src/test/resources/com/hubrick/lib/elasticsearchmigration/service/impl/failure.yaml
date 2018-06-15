@@ -1,0 +1,33 @@
+migrations:
+  - type: CREATE_OR_UPDATE_INDEX_TEMPLATE
+    index: 'test_index'
+    definition: >
+      {
+          "settings": {
+              "number_of_shards": 3
+          },
+          "mappings": {
+              "test": {
+                  "dynamic": "strict",
+                  "_source": {
+                      "enabled": true
+                  },
+                  "properties": {
+                      "user": {
+                          "type": "keyword",
+                          "index": true
+                      },
+                      "post_date": {
+                          "type": "keyword",
+                          "index": true
+                      },
+                      "message": {
+                          "type": "keyword",
+                          "index": true
+                      }
+                  }
+              }
+          }
+      }
+
+
