@@ -31,7 +31,7 @@ public class ElasticsearchMigrationConfig {
     private final String identifier;
     @NonNull
     @Builder.Default
-    private final String basePath = "es.migration";
+    private final String basePackage = "es.migration";
     @NonNull
     @Builder.Default
     private final Boolean ignorePreviousFailures = true;

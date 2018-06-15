@@ -38,7 +38,7 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
     @Test
     public void testMigrate() throws IOException, InterruptedException, ExecutionException {
         final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration(
-                ElasticsearchMigrationConfig.builder( "test", ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()).basePath("changeset").build()
+                ElasticsearchMigrationConfig.builder( "test", ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()).basePackage("changeset").build()
         );
 
         elasticsearchMigration.migrate();

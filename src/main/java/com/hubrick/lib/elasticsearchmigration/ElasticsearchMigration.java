@@ -70,7 +70,7 @@ public class ElasticsearchMigration {
 
     public void migrate() {
         log.info("Starting ES schema migration...");
-        final MigrationSet migrationSet = migrationSetProvider.getMigrationSet(elasticsearchMigrationConfig.getBasePath());
+        final MigrationSet migrationSet = migrationSetProvider.getMigrationSet(elasticsearchMigrationConfig.getBasePackage());
         migrationClient.applyMigrationSet(migrationSet);
         log.info("Finished ES schema migration");
     }
