@@ -208,9 +208,9 @@ Example:
 ```
 final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration(
   ElasticsearchMigrationConfig.builder( 
-    "test", 
+    "test-service", 
     ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()
-  ).basePath("changeset").build()
+  ).basePath("migration.es").build()
 );
 
 elasticsearchMigration.migrate();
@@ -223,3 +223,6 @@ elasticsearchMigration.migrate();
 
 ## Limitations
 * The tool does not roll back the database upon migration failure. You're expected to manually restore backup.
+
+## License
+Apache License, Version 2.0
