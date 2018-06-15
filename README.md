@@ -210,7 +210,7 @@ final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration
   ElasticsearchMigrationConfig.builder( 
     "test-service", 
     ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()
-  ).basePath("migration.es").build()
+  ).basePackage("migration.es").build()
 );
 
 elasticsearchMigration.migrate();
