@@ -11,7 +11,7 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 <dependency>
     <groupId>com.hubrick.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
