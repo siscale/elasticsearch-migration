@@ -65,19 +65,21 @@ public class YamlDirectoryMigrationSetProviderTest {
                 "migration_three"
         ));
         assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getSha256Checksum()).collect(Collectors.toList()), contains(
-                "125a71e37ca846d26814ac8063831ab1c1fe19cf3a5e9d06916a8e8bace450c2",
-                "653bff037b49688eca9e7d33312fc4eec12e48d701d037becb3ead5a874e4ecd",
-                "f8dd60c73ae0b455724e38a4bf75c20a423c506731dd771bc81fd0981e42519c"
+                "e70768434489d06d6b51d9bf1ac4f1804d8cd530a6af70e5eebd9994778c78d1",
+                "c0b90eb5d8a427d36d709419418a95b6e5fd26fba7e16e7ea49204dbb7b86e9f",
+                "f22917c73688ba7cc769fb6ca321f5ce008523a5a8857d1cf25c1016b6b65d7d"
         ));
         assertThat(migrationSet.getMigrations().stream().flatMap(e -> e.getMigration().stream()).collect(Collectors.toList()), contains(
-                new CreateIndexMigration("test_index", "{}"),
+                new CreateIndexMigration("test_index_1", "{}"),
+                new CreateIndexMigration("test_index_2", "{}"),
                 new CreateOrUpdateIndexTemplateMigration("test_template", "{}"),
-                new UpdateMappingMigration(ImmutableSet.of("test_index"), "test", "{}"),
-                new IndexDocumentMigration("test_index", "test", Optional.of("1"), Optional.empty(), "{}"),
-                new UpdateDocumentMigration("test_index", "test", "1", "{}"),
-                new DeleteDocumentMigration("test_index", "test", "1"),
+                new UpdateMappingMigration(ImmutableSet.of("test_index_1", "test_index_2"), "test", "{}"),
+                new IndexDocumentMigration("test_index_1", "test", Optional.of("1"), Optional.empty(), "{}"),
+                new UpdateDocumentMigration("test_index_1", "test", "1", "{}"),
+                new DeleteDocumentMigration("test_index_1", "test", "1"),
                 new DeleteIndexTemplateMigration("test_template"),
-                new DeleteIndexMigration("test_index")
+                new DeleteIndexMigration("test_index_1"),
+                new DeleteIndexMigration("test_index_2")
         ));
 
     }

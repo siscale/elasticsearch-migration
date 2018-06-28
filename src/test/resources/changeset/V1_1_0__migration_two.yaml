@@ -2,7 +2,8 @@ migrations:
   - type: UPDATE_MAPPING
     mapping: 'test'
     indices:
-      - 'test_index'
+      - 'test_index_1'
+      - 'test_index_2'
     definition: >
           {
             "properties": {

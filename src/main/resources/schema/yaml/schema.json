@@ -82,7 +82,7 @@
                                     }
                                 ],
                                 "minItems": 1,
-                                "additionalItems": false
+                                "additionalItems": true
                             },
                             "mapping": {
                                 "type": "string"
