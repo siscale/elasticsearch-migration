@@ -164,7 +164,7 @@ public abstract class AbstractESTest {
     @SneakyThrows
     protected void flushIndex() {
         given().port(9200).body("{\"wait_if_ongoing\":true}").contentType(ContentType.JSON).expect().statusCode(200).post("/_flush");
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
 
     @SneakyThrows
