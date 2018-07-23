@@ -55,7 +55,9 @@ public class ElasticsearchMigration {
     }
 
     private RestHighLevelClient createElasticsearchClient(ElasticsearchConfig elasticsearchConfig) {
-        final RestClientBuilder builder = RestClient.builder(new HttpHost(elasticsearchConfig.getUrl().getHost(), elasticsearchConfig.getUrl().getPort(), elasticsearchConfig.getUrl().getProtocol()));
+        final RestClientBuilder builder = RestClient.builder(
+                elasticsearchConfig.getUrls().stream().map(e -> new HttpHost(e.getHost(), e.getPort(), e.getProtocol())).collect(Collectors.toSet()).toArray(new HttpHost[0])
+        );
         builder.setDefaultHeaders(elasticsearchConfig.getHeaders().entries().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new Header[0]));
 
         if (elasticsearchConfig.getMaxRetryTimeoutMillis() != null) {

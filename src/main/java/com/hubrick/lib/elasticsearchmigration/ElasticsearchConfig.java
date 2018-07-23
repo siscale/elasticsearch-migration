@@ -17,11 +17,14 @@ package com.hubrick.lib.elasticsearchmigration;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author Emir Dizdarevic
@@ -32,7 +35,7 @@ import java.net.URL;
 public class ElasticsearchConfig {
 
     @NonNull
-    private final URL url;
+    private final Set<URL> urls;
     private final Integer maxRetryTimeoutMillis;
     private final String pathPrefix;
 
@@ -41,6 +44,14 @@ public class ElasticsearchConfig {
     private final Multimap<String, String> headers = HashMultimap.create();
 
     public static ElasticsearchConfigBuilder builder(@NonNull URL url) {
-        return hiddenBuilder().url(url);
+        return hiddenBuilder().urls(Collections.singleton(url));
+    }
+
+    public static ElasticsearchConfigBuilder builder(@NonNull URL... urls) {
+        return hiddenBuilder().urls(Sets.newHashSet(urls));
+    }
+
+    public static ElasticsearchConfigBuilder builder(@NonNull Set<URL> urls) {
+        return hiddenBuilder().urls(urls);
     }
 }
