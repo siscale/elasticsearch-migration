@@ -27,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.hubrick.lib.elasticsearchmigration.exception.MigrationFailedException;
 import com.hubrick.lib.elasticsearchmigration.exception.MigrationLockedException;
@@ -142,6 +143,7 @@ public class DefaultMigrationClient implements MigrationClient {
         objectMapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
         objectMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
         objectMapper.configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         objectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -217,7 +219,7 @@ public class DefaultMigrationClient implements MigrationClient {
                                         identifier,
                                         migrationSetEntry.getMigrationMeta().getVersion(),
                                         migrationSetEntry.getMigrationMeta().getName(),
-                                        migrationSetEntry.getMigrationMeta().getSha256Checksum(),
+                                        migrationSetEntry.getMigrationMeta().getSha256Checksums(),
                                         State.IN_PROGRESS,
                                         null,
                                         Instant.now()
@@ -268,8 +270,8 @@ public class DefaultMigrationClient implements MigrationClient {
         for (int i = 0; i < migrationEntries.size(); i++) {
             if (!migrationEntries.get(i).getVersion().equals(migrationMetas.get(i).getVersion())) {
                 throw new MigrationFailedException("Version mismatch for " + migrationEntries.get(i).getName() + ". Local version: " + migrationMetas.get(i).getVersion() + ", ES version: " + migrationEntries.get(i).getVersion());
-            } else if (!migrationEntries.get(i).getSha256Checksum().equals(migrationMetas.get(i).getSha256Checksum())) {
-                throw new MigrationFailedException("Checksum mismatch for " + migrationEntries.get(i).getName() + ". Local checksum: " + migrationMetas.get(i).getVersion() + ":" + migrationMetas.get(i).getSha256Checksum() + ", ES checksum: " + migrationEntries.get(i).getVersion() + ":" + migrationEntries.get(i).getSha256Checksum());
+            } else if (Sets.intersection(migrationEntries.get(i).getSha256Checksum(), migrationMetas.get(i).getSha256Checksums()).isEmpty()) {
+                throw new MigrationFailedException("Checksum mismatch for " + migrationEntries.get(i).getName() + ". Local checksums: " + migrationMetas.get(i).getVersion() + ":" + migrationMetas.get(i).getSha256Checksums() + ", ES checksums: " + migrationEntries.get(i).getVersion() + ":" + migrationEntries.get(i).getSha256Checksum());
             } else if (!migrationEntries.get(i).getName().equals(migrationMetas.get(i).getName())) {
                 throw new MigrationFailedException("Name mismatch. Local checksum: " + migrationMetas.get(i).getVersion() + ":" + migrationMetas.get(i).getName() + ", ES checksum: " + migrationEntries.get(i).getVersion() + ":" + migrationEntries.get(i).getName());
             }

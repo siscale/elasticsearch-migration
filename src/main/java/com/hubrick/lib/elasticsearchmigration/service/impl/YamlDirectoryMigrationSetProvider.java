@@ -16,6 +16,7 @@
 package com.hubrick.lib.elasticsearchmigration.service.impl;
 
 import com.hubrick.lib.elasticsearchmigration.model.input.BaseMigrationFileEntry;
+import com.hubrick.lib.elasticsearchmigration.model.input.ChecksumedMigrationFile;
 import com.hubrick.lib.elasticsearchmigration.model.input.CreateIndexMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.CreateOrUpdateIndexTemplateMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.DeleteDocumentMigrationFileEntry;
@@ -39,12 +40,9 @@ import com.hubrick.lib.elasticsearchmigration.model.migration.UpdateDocumentMigr
 import com.hubrick.lib.elasticsearchmigration.model.migration.UpdateMappingMigration;
 import com.hubrick.lib.elasticsearchmigration.service.MigrationSetProvider;
 import com.hubrick.lib.elasticsearchmigration.service.Parser;
-import com.hubrick.lib.elasticsearchmigration.util.HashUtils;
-import com.hubrick.lib.elasticsearchmigration.util.ResourceUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -84,12 +82,12 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
             final Matcher matcher = MIGRATION_FILE_PATTERN.matcher(resourceName);
             matcher.matches();
 
-            final InputStream resourceAsStream = ResourceUtils.getResourceAsStream(resource, this);
+            final ChecksumedMigrationFile checksumedMigrationFile = yamlParser.parse(resource);
             migrationSetEntries.add(
                     new MigrationSetEntry(
-                            yamlParser.parse(resource).getMigrations().stream().map(this::convertToMigration).collect(Collectors.toList()),
+                            checksumedMigrationFile.getMigrationFile().getMigrations().stream().map(this::convertToMigration).collect(Collectors.toList()),
                             new MigrationMeta(
-                                    HashUtils.hashSha256(resourceAsStream),
+                                    checksumedMigrationFile.getSha256Checksums(),
                                     matcher.group(1).replaceAll("_", "."),
                                     matcher.group(2)
                             )

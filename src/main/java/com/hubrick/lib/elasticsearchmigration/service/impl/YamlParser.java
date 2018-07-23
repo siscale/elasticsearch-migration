@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fge.jsonschema.core.load.Dereferencing;
@@ -30,16 +31,22 @@ import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 import com.hubrick.lib.elasticsearchmigration.exception.InvalidSchemaException;
+import com.hubrick.lib.elasticsearchmigration.model.input.ChecksumedMigrationFile;
 import com.hubrick.lib.elasticsearchmigration.model.input.MigrationFile;
 import com.hubrick.lib.elasticsearchmigration.service.Parser;
+import com.hubrick.lib.elasticsearchmigration.util.HashUtils;
 import com.hubrick.lib.elasticsearchmigration.util.ResourceUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,14 +80,19 @@ public class YamlParser implements Parser {
     }
 
     private ObjectMapper createYamlMapper() {
-        final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
+        final YAMLFactory yamlFactory = new YAMLFactory();
+        yamlFactory.configure(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, false);
+        yamlFactory.configure(YAMLGenerator.Feature.USE_NATIVE_TYPE_ID, false);
+        yamlFactory.configure(YAMLGenerator.Feature.LITERAL_BLOCK_STYLE, true);
+
+        final ObjectMapper yamlMapper = new ObjectMapper(yamlFactory);
         yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         yamlMapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
         yamlMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
         yamlMapper.configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
         yamlMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
         yamlMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        yamlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        yamlMapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
 
         yamlMapper.registerModule(new Jdk8Module());
         yamlMapper.registerModule(new JavaTimeModule());
@@ -122,15 +134,26 @@ public class YamlParser implements Parser {
     }
 
     @Override
-    public MigrationFile parse(final String path) {
+    public ChecksumedMigrationFile parse(final String path) {
         checkNotNull(StringUtils.trimToNull(path), "path must be not null");
 
         try {
             log.info("Checking schema for file " + path);
             checkSchema(path);
             log.info("Parsing file " + path);
-            final InputStream inputStream = ResourceUtils.getResourceAsStream(path, this);
-            return yamlMapper.readValue(inputStream, MigrationFile.class);
+            final byte[] yaml = IOUtils.toByteArray(ResourceUtils.getResourceAsStream(path, this));
+            final MigrationFile migrationFile = yamlMapper.readValue(new ByteArrayInputStream(yaml), MigrationFile.class);
+            final String fileSha256Checksum = HashUtils.hashSha256(new ByteArrayInputStream(yaml));
+
+            final byte[] normalizedYaml = yamlMapper.writeValueAsBytes(migrationFile);
+            final String normalizedSha256Checksum = HashUtils.hashSha256(ByteBuffer.wrap(normalizedYaml));
+
+            if(log.isDebugEnabled()) {
+                log.debug("Original yaml: \n{}", new String(yaml, Charsets.UTF_8));
+                log.debug("Normalized yaml: \n{}", new String(normalizedYaml, Charsets.UTF_8));
+            }
+
+            return new ChecksumedMigrationFile(migrationFile, ImmutableSet.of(fileSha256Checksum, normalizedSha256Checksum));
         } catch (IOException e) {
             throw new InvalidSchemaException("Problem parsing yaml file " + path, e);
         }

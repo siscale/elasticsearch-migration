@@ -25,6 +25,7 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
@@ -54,7 +55,10 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry100.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry100.getFailureMessage(), is(""));
         assertThat(migrationEntry100.getState(), is(State.SUCCESS));
-        assertThat(migrationEntry100.getSha256Checksum(), is("5f18dfd0d16bd10b481e84e7254b6f485f31524e292dc226ec737ed300e98894"));
+        assertThat(migrationEntry100.getSha256Checksum(), containsInAnyOrder(
+                "d9b98077f9201f2ee9a7ea4cb3d204ba7293fa5c56be82cabc2b71bf2e1deceb",
+                "49e4bc012cec54ef0632a47fdac3d9f6463e10e0292f0a2cd95058b91d4ab022"
+        ));
 
         assertThat(migrationEntry110.getIdentifier(), is("test"));
         assertThat(migrationEntry110.getVersion(), is("1.1.0"));
@@ -62,7 +66,10 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry110.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry110.getFailureMessage(), is(""));
         assertThat(migrationEntry110.getState(), is(State.SUCCESS));
-        assertThat(migrationEntry110.getSha256Checksum(), is("0f4b920b0c5e14d8a5bef6a1086c2191b383aa18b19f4e88ae0e53a169ffbad2"));
+        assertThat(migrationEntry110.getSha256Checksum(), containsInAnyOrder(
+                "0f4b920b0c5e14d8a5bef6a1086c2191b383aa18b19f4e88ae0e53a169ffbad2",
+                "fc8eb899d26dcbf587e50af21a6a07ce09a9ba097454e8175029f6c2ef4ae5a5"
+        ));
 
         assertThat(migrationEntry111.getIdentifier(), is("test"));
         assertThat(migrationEntry111.getVersion(), is("1.1.1"));
@@ -70,6 +77,9 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry111.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry111.getFailureMessage(), is(""));
         assertThat(migrationEntry111.getState(), is(State.SUCCESS));
-        assertThat(migrationEntry111.getSha256Checksum(), is("ad48c1788a74d58a5bcb561b5f1656e0b296ada1f966ab76521248de320401d3"));
+        assertThat(migrationEntry111.getSha256Checksum(), containsInAnyOrder(
+                "a22410c56a7d334d5565296a8fedc40703de56ff3889f7e04e1f98c290d8f27a",
+                "0c1e4f28ba8c322be342a2a917524349285c3d135438a01d6a34a91afd78d449"
+        ));
     }
 }

@@ -9,6 +9,7 @@ migrations:
               "post_date" : "2009-11-15T14:12:12",
               "message" : "trying out Elasticsearch"
           }
+
   - type: UPDATE_DOCUMENT
     index: 'test_index_1'
     mapping: 'test'
@@ -19,14 +20,18 @@ migrations:
                   "user" : "new_user"
               }
           }
+
   - type: DELETE_DOCUMENT
     index: 'test_index_1'
     mapping: 'test'
     id: '1'
+
   - type: DELETE_INDEX_TEMPLATE
     template: 'test_template'
+
   - type: DELETE_INDEX
     index: 'test_index_1'
+
   - type: DELETE_INDEX
     index: 'test_index_2'
 

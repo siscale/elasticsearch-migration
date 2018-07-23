@@ -81,6 +81,7 @@ public abstract class AbstractESTest {
         esObjectMapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
         esObjectMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
         esObjectMapper.configure(DeserializationFeature.USE_BIG_INTEGER_FOR_INTS, true);
+        esObjectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         esObjectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
         esObjectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         esObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
