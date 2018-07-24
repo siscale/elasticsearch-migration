@@ -100,7 +100,15 @@ In case the migration is aborted for any reason the lock won't be removed and ha
 The changesets are defined with versioned yaml files (V{version}__{name}.yaml)(example: V1_0_0__singularity.yaml). 
 The yaml files have to conform to this schema [YAML Schema](src/main/resources/schema/yaml/schema.json). 
 
-Currently the following migration types are supported: CREATE_INDEX, DELETE_INDEX, CREATE_OR_UPDATE_INDEX_TEMPLATE, DELETE_INDEX_TEMPLATE, UPDATE_MAPPING, INDEX_DOCUMENT, UPDATE_DOCUMENT, DELETE_DOCUMENT.
+Currently the following migration types are supported: 
+ * CREATE_INDEX
+ * DELETE_INDEX
+ * CREATE_OR_UPDATE_INDEX_TEMPLATE
+ * DELETE_INDEX_TEMPLATE
+ * UPDATE_MAPPING
+ * INDEX_DOCUMENT
+ * UPDATE_DOCUMENT
+ * DELETE_DOCUMENT
 
 ### Example changeset
 ```yaml
