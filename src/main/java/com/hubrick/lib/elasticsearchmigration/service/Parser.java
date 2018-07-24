@@ -15,7 +15,7 @@
  */
 package com.hubrick.lib.elasticsearchmigration.service;
 
-import com.hubrick.lib.elasticsearchmigration.model.input.MigrationFile;
+import com.hubrick.lib.elasticsearchmigration.model.input.ChecksumedMigrationFile;
 
 /**
  * @author Emir Dizdarevic
@@ -23,5 +23,5 @@ import com.hubrick.lib.elasticsearchmigration.model.input.MigrationFile;
  */
 public interface Parser {
 
-    MigrationFile parse(final String path);
+    ChecksumedMigrationFile parse(final String path);
 }

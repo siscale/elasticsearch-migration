@@ -13,46 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hubrick.lib.elasticsearchmigration.model.es;
+package com.hubrick.lib.elasticsearchmigration.model.input;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-import java.time.Instant;
 import java.util.Set;
 
 /**
  * @author Emir Dizdarevic
- * @since 1.0.0
+ * @since 1.0.5
  */
 @Getter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MigrationEntry {
+public class ChecksumedMigrationFile {
 
     @NonNull
-    @JsonProperty(MigrationEntryMeta.IDENTIFIER_FIELD)
-    private String identifier;
-    @NonNull
-    @JsonProperty(MigrationEntryMeta.VERSION_FIELD)
-    private String version;
-    @NonNull
-    @JsonProperty(MigrationEntryMeta.NAME_FIELD)
-    private String name;
-    @NonNull
-    @JsonProperty(MigrationEntryMeta.SHA_256_CHECKSUM_FIELD)
-    private Set<String> sha256Checksum;
-    @NonNull
-    @JsonProperty(MigrationEntryMeta.STATE_FIELD)
-    private State state;
+    private MigrationFile migrationFile;
 
-    @JsonProperty(MigrationEntryMeta.FAUILURE_MESSAGE_FIELD)
-    private String failureMessage;
     @NonNull
-    @JsonProperty(MigrationEntryMeta.CREATED_FIELD)
-    private Instant created;
+    private Set<String> sha256Checksums;
 }

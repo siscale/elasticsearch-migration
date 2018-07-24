@@ -23,7 +23,6 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.net.URL;
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -42,10 +41,6 @@ public class ElasticsearchConfig {
     @NonNull
     @Builder.Default
     private final Multimap<String, String> headers = HashMultimap.create();
-
-    public static ElasticsearchConfigBuilder builder(@NonNull URL url) {
-        return hiddenBuilder().urls(Collections.singleton(url));
-    }
 
     public static ElasticsearchConfigBuilder builder(@NonNull URL... urls) {
         return hiddenBuilder().urls(Sets.newHashSet(urls));

@@ -18,6 +18,7 @@ package com.hubrick.lib.elasticsearchmigration.model.migration;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -32,17 +33,18 @@ public class MigrationMeta {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("^([0-9]{1}(\\.{1}[0-9]+)*)$");
 
-    private final String sha256Checksum;
+    private final Set<String> sha256Checksums;
     private final String version;
     private final String name;
 
-    public MigrationMeta(final String sha256Checksum, final String version, final String name) {
-        checkNotNull(StringUtils.trimToNull(sha256Checksum), "sha256Checksum must not be null");
+    public MigrationMeta(final Set<String> sha256Checksums, final String version, final String name) {
+        checkNotNull(sha256Checksums, "sha256Checksums must not be null");
+        checkArgument(sha256Checksums.stream().map(e -> StringUtils.trimToNull(e) != null).reduce(true, (a, b) -> a && b), "sha256Checksum must not be null");
         checkNotNull(StringUtils.trimToNull(version), "version must not be null");
         checkArgument(VERSION_PATTERN.matcher(version).matches(), "version must be a valid version number like 1.0.0");
         checkNotNull(StringUtils.trimToNull(name), "name must not be null");
 
-        this.sha256Checksum = sha256Checksum;
+        this.sha256Checksums = sha256Checksums;
         this.version = version;
         this.name = name;
     }

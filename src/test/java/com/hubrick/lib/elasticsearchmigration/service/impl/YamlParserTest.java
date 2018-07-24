@@ -16,13 +16,13 @@
 package com.hubrick.lib.elasticsearchmigration.service.impl;
 
 import com.hubrick.lib.elasticsearchmigration.exception.InvalidSchemaException;
+import com.hubrick.lib.elasticsearchmigration.model.input.ChecksumedMigrationFile;
 import com.hubrick.lib.elasticsearchmigration.model.input.CreateIndexMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.CreateOrUpdateIndexTemplateMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.DeleteDocumentMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.DeleteIndexMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.DeleteIndexTemplateMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.IndexDocumentMigrationFileEntry;
-import com.hubrick.lib.elasticsearchmigration.model.input.MigrationFile;
 import com.hubrick.lib.elasticsearchmigration.model.input.UpdateDocumentMigrationFileEntry;
 import com.hubrick.lib.elasticsearchmigration.model.input.UpdateMappingMigrationFileEntry;
 import org.junit.Test;
@@ -30,6 +30,7 @@ import org.junit.Test;
 import java.net.URISyntaxException;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -42,9 +43,9 @@ public class YamlParserTest {
     @Test
     public void parseSuccess() throws URISyntaxException {
         final YamlParser yamlParser = new YamlParser();
-        final MigrationFile migrationFile = yamlParser.parse("success.yaml");
+        final ChecksumedMigrationFile checksumedMigrationFile = yamlParser.parse("success.yaml");
 
-        assertThat(migrationFile.getMigrations(), contains(
+        assertThat(checksumedMigrationFile.getMigrationFile().getMigrations(), contains(
                 instanceOf(CreateIndexMigrationFileEntry.class),
                 instanceOf(CreateOrUpdateIndexTemplateMigrationFileEntry.class),
                 instanceOf(UpdateMappingMigrationFileEntry.class),
@@ -53,6 +54,11 @@ public class YamlParserTest {
                 instanceOf(DeleteDocumentMigrationFileEntry.class),
                 instanceOf(DeleteIndexTemplateMigrationFileEntry.class),
                 instanceOf(DeleteIndexMigrationFileEntry.class)
+        ));
+
+        assertThat(checksumedMigrationFile.getSha256Checksums(), containsInAnyOrder(
+                "53d16871b446d1f5db362f74c2f3b4a211e568b11736c6c1816a3d0107baa445",
+                "8da26f8be997e97f320e8a63ffcc67d302c548e78606509f773b7fab5ffd920e"
         ));
     }
 

@@ -30,6 +30,7 @@ migrations:
               }
           }
       }
+
   - type: CREATE_INDEX
     index: 'test_index_2'
     definition: >
@@ -61,6 +62,7 @@ migrations:
               }
           }
       }
+
   - type: CREATE_OR_UPDATE_INDEX_TEMPLATE
     template: 'test_template'
     definition: >
