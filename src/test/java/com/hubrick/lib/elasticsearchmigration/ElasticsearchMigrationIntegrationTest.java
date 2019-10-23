@@ -55,8 +55,7 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry100.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry100.getFailureMessage(), is(""));
         assertThat(migrationEntry100.getState(), is(State.SUCCESS));
-        assertThat(migrationEntry100.getSha256Checksum(), containsInAnyOrder(
-                "24e88874e494349b13562cbb706745424b7c661cc92be15c8cf00cf24a50ff0b",
+        assertThat(migrationEntry100.getSha256Checksum(), is(
                 "e48d69ff3d07bb0e90bb4942f316d2166b0b46359467d176052e201f61583c77"
         ));
 
@@ -66,9 +65,8 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry110.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry110.getFailureMessage(), is(""));
         assertThat(migrationEntry110.getState(), is(State.SUCCESS));
-        assertThat(migrationEntry110.getSha256Checksum(), containsInAnyOrder(
-                "863e13aaaadf7faa8ae3499ed4f4f51e7319fae385f9ae0ecb12cec079753997",
-                "f67f164931c53499915056d3220c56c2b036c282f0f7c9821b8d08453040c9c7"
+        assertThat(migrationEntry110.getSha256Checksum(), is(
+                "863e13aaaadf7faa8ae3499ed4f4f51e7319fae385f9ae0ecb12cec079753997"
         ));
 
         assertThat(migrationEntry111.getIdentifier(), is("test"));
@@ -77,9 +75,8 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry111.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry111.getFailureMessage(), is(""));
         assertThat(migrationEntry111.getState(), is(State.SUCCESS));
-        assertThat(migrationEntry111.getSha256Checksum(), containsInAnyOrder(
-                "cb8fc0b8bd4325807a6a16a480aa80a453659a3d90da8329023f600461d094ed",
-                "4b69f5084b608d6cd3dd058fdcbabf84f89c4c918d0a406186d21656061c8dd9"
+        assertThat(migrationEntry111.getSha256Checksum(), is(
+                "cb8fc0b8bd4325807a6a16a480aa80a453659a3d90da8329023f600461d094ed"
         ));
     }
 }

@@ -45,7 +45,7 @@ public class MigrationEntry {
     private String name;
     @NonNull
     @JsonProperty(MigrationEntryMeta.SHA_256_CHECKSUM_FIELD)
-    private Set<String> sha256Checksum;
+    private String sha256Checksum;
     @NonNull
     @JsonProperty(MigrationEntryMeta.STATE_FIELD)
     private State state;

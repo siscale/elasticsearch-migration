@@ -87,7 +87,7 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
                     new MigrationSetEntry(
                             checksumedMigrationFile.getMigrationFile().getMigrations().stream().map(this::convertToMigration).collect(Collectors.toList()),
                             new MigrationMeta(
-                                    checksumedMigrationFile.getSha256Checksums(),
+                                    checksumedMigrationFile.getSha256Checksum(),
                                     matcher.group(1).replaceAll("_", "."),
                                     matcher.group(2)
                             )

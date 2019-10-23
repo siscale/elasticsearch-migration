@@ -29,9 +29,7 @@ import org.junit.Test;
 
 import java.net.URISyntaxException;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -56,8 +54,7 @@ public class YamlParserTest {
                 instanceOf(DeleteIndexMigrationFileEntry.class)
         ));
 
-        assertThat(checksumedMigrationFile.getSha256Checksums(), containsInAnyOrder(
-                "1842b6bf13f817c358ca6b36632547386107a3b79cbebb8f6aec6d49e0442cde",
+        assertThat(checksumedMigrationFile.getSha256Checksum(), is(
                 "809ea86173d206af07cf1d6403524ff9b7ad41534b268a93c13c14dde6d952ba"
         ));
     }

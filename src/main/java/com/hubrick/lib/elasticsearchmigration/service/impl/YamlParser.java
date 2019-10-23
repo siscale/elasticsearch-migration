@@ -143,7 +143,6 @@ public class YamlParser implements Parser {
             log.info("Parsing file " + path);
             final byte[] yaml = IOUtils.toByteArray(ResourceUtils.getResourceAsStream(path, this));
             final MigrationFile migrationFile = yamlMapper.readValue(new ByteArrayInputStream(yaml), MigrationFile.class);
-            final String fileSha256Checksum = HashUtils.hashSha256(new ByteArrayInputStream(yaml));
 
             final byte[] normalizedYaml = yamlMapper.writeValueAsBytes(migrationFile);
             final String normalizedSha256Checksum = HashUtils.hashSha256(ByteBuffer.wrap(normalizedYaml));
@@ -153,7 +152,7 @@ public class YamlParser implements Parser {
                 log.debug("Normalized yaml: \n{}", new String(normalizedYaml, Charsets.UTF_8));
             }
 
-            return new ChecksumedMigrationFile(migrationFile, ImmutableSet.of(fileSha256Checksum, normalizedSha256Checksum));
+            return new ChecksumedMigrationFile(migrationFile, normalizedSha256Checksum);
         } catch (IOException e) {
             throw new InvalidSchemaException("Problem parsing yaml file " + path, e);
         }

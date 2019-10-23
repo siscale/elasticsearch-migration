@@ -89,9 +89,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -117,9 +115,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new DeleteIndexMigration("test_index")),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -143,9 +139,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateOrUpdateIndexTemplateMigration("test_template", loadResource("create_template.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -171,9 +165,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new DeleteIndexTemplateMigration("test_template")),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -199,9 +191,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new UpdateMappingMigration(ImmutableSet.of("test_index"), loadResource("update_mapping.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -228,9 +218,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new IndexDocumentMigration("test_index", Optional.of("1"), Optional.empty(), loadResource("index_document.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -257,9 +245,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new DeleteDocumentMigration("test_index", "1")),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -288,9 +274,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -318,9 +302,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -345,9 +327,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -372,9 +352,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -383,9 +361,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "0.1.0",
                                         "singularity"
                                 )
@@ -411,9 +387,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -441,9 +415,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -470,9 +442,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "wrong_name"
                                 )
@@ -497,9 +467,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "20d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "20d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -525,9 +493,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "1.0.0",
                                         "singularity"
                                 )
@@ -553,9 +519,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                         new MigrationSetEntry(
                                 ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
                                 new MigrationMeta(
-                                        ImmutableSet.of(
-                                                "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
-                                        ),
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
                                         "0.1.0",
                                         "singularity"
                                 )
@@ -572,7 +536,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry.getName(), is("singularity"));
         assertThat(migrationEntry.getVersion(), is("1.0.0"));
         assertThat(migrationEntry.getIdentifier(), is(IDENTIFIER));
-        assertThat(migrationEntry.getSha256Checksum(), containsInAnyOrder("10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"));
+        assertThat(migrationEntry.getSha256Checksum(), is("10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"));
         assertThat(migrationEntry.getState(), is(State.SUCCESS));
         assertThat(migrationEntry.getCreated(), notNullValue());
         assertThat(migrationEntry.getFailureMessage(), isEmptyString());

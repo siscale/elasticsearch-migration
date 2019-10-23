@@ -38,5 +38,5 @@ public class ChecksumedMigrationFile {
     private MigrationFile migrationFile;
 
     @NonNull
-    private Set<String> sha256Checksums;
+    private String sha256Checksum;
 }

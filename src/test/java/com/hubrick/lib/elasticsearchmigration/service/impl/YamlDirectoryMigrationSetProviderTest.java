@@ -64,10 +64,10 @@ public class YamlDirectoryMigrationSetProviderTest {
                 "migration_two",
                 "migration_three"
         ));
-        assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getSha256Checksums()).collect(Collectors.toList()), contains(
-                ImmutableSet.of("add4031e5df0c7b8426426019b6c1b7031443661da4639c41db583d7ecac3336", "e874b5f9c634b1b0058887b5d9bcdde6bae0850d83b89b17dcbf062fb579c739"),
-                ImmutableSet.of("d9a0430c8fe25ef4809a6e456b53effbc1b3b44ad4db8f50dc69b4167ad39f1e", "348c126c00c989b521c50d64018d2579d76ce26a9c00b9a99eaeb3073f43b847"),
-                ImmutableSet.of("b5694b48c166bf79cb69d4dc058461b5c3312ae7fad8ada60c617ed26c5501d7", "ba4d3f7585a354d407805cbaa6443ba77b9db63990944c74dbe485e3591bc494")
+        assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getSha256Checksum()).collect(Collectors.toList()), contains(
+                "e874b5f9c634b1b0058887b5d9bcdde6bae0850d83b89b17dcbf062fb579c739",
+                "348c126c00c989b521c50d64018d2579d76ce26a9c00b9a99eaeb3073f43b847",
+                "ba4d3f7585a354d407805cbaa6443ba77b9db63990944c74dbe485e3591bc494"
         ));
         assertThat(migrationSet.getMigrations().stream().flatMap(e -> e.getMigration().stream()).collect(Collectors.toList()), contains(
                 new CreateIndexMigration("test_index_1", "{}"),
