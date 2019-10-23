@@ -39,14 +39,14 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
     @Test
     public void testMigrate() throws IOException, InterruptedException, ExecutionException {
         final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration(
-                ElasticsearchMigrationConfig.builder( "test", ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()).basePackage("changeset").build()
+                ElasticsearchMigrationConfig.builder("test", ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()).basePackage("changeset").build()
         );
 
         elasticsearchMigration.migrate();
 
-        final MigrationEntry migrationEntry100 = getFromIndex(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", MigrationEntry.class);
-        final MigrationEntry migrationEntry110 = getFromIndex(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.1.0", MigrationEntry.class);
-        final MigrationEntry migrationEntry111 = getFromIndex(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.1.1", MigrationEntry.class);
+        final MigrationEntry migrationEntry100 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.0.0", MigrationEntry.class);
+        final MigrationEntry migrationEntry110 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.1.0", MigrationEntry.class);
+        final MigrationEntry migrationEntry111 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.1.1", MigrationEntry.class);
 
         final Instant now = Instant.now();
         assertThat(migrationEntry100.getIdentifier(), is("test"));
@@ -56,8 +56,8 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry100.getFailureMessage(), is(""));
         assertThat(migrationEntry100.getState(), is(State.SUCCESS));
         assertThat(migrationEntry100.getSha256Checksum(), containsInAnyOrder(
-                "d9b98077f9201f2ee9a7ea4cb3d204ba7293fa5c56be82cabc2b71bf2e1deceb",
-                "49e4bc012cec54ef0632a47fdac3d9f6463e10e0292f0a2cd95058b91d4ab022"
+                "24e88874e494349b13562cbb706745424b7c661cc92be15c8cf00cf24a50ff0b",
+                "e48d69ff3d07bb0e90bb4942f316d2166b0b46359467d176052e201f61583c77"
         ));
 
         assertThat(migrationEntry110.getIdentifier(), is("test"));
@@ -67,8 +67,8 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry110.getFailureMessage(), is(""));
         assertThat(migrationEntry110.getState(), is(State.SUCCESS));
         assertThat(migrationEntry110.getSha256Checksum(), containsInAnyOrder(
-                "0f4b920b0c5e14d8a5bef6a1086c2191b383aa18b19f4e88ae0e53a169ffbad2",
-                "fc8eb899d26dcbf587e50af21a6a07ce09a9ba097454e8175029f6c2ef4ae5a5"
+                "863e13aaaadf7faa8ae3499ed4f4f51e7319fae385f9ae0ecb12cec079753997",
+                "f67f164931c53499915056d3220c56c2b036c282f0f7c9821b8d08453040c9c7"
         ));
 
         assertThat(migrationEntry111.getIdentifier(), is("test"));
@@ -78,8 +78,8 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry111.getFailureMessage(), is(""));
         assertThat(migrationEntry111.getState(), is(State.SUCCESS));
         assertThat(migrationEntry111.getSha256Checksum(), containsInAnyOrder(
-                "a22410c56a7d334d5565296a8fedc40703de56ff3889f7e04e1f98c290d8f27a",
-                "0c1e4f28ba8c322be342a2a917524349285c3d135438a01d6a34a91afd78d449"
+                "cb8fc0b8bd4325807a6a16a480aa80a453659a3d90da8329023f600461d094ed",
+                "4b69f5084b608d6cd3dd058fdcbabf84f89c4c918d0a406186d21656061c8dd9"
         ));
     }
 }

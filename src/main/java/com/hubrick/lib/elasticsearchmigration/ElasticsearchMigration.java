@@ -60,9 +60,6 @@ public class ElasticsearchMigration {
         );
         builder.setDefaultHeaders(elasticsearchConfig.getHeaders().entries().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new Header[0]));
 
-        if (elasticsearchConfig.getMaxRetryTimeoutMillis() != null) {
-            builder.setMaxRetryTimeoutMillis(elasticsearchConfig.getMaxRetryTimeoutMillis());
-        }
         if (elasticsearchConfig.getPathPrefix() != null) {
             builder.setPathPrefix(elasticsearchConfig.getPathPrefix());
         }

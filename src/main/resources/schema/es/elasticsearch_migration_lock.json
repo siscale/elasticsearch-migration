@@ -3,17 +3,15 @@
         "number_of_shards": 3
     },
     "mappings": {
-        "lock": {
-            "dynamic": "strict",
-            "_source": {
-                "enabled": true
-            },
-            "properties": {
-                "created": {
-                    "type": "date",
-                    "format": "date_time",
-                    "index": true
-                }
+        "dynamic": "strict",
+        "_source": {
+            "enabled": true
+        },
+        "properties": {
+            "created": {
+                "type": "date",
+                "format": "date_time",
+                "index": true
             }
         }
     }

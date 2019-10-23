@@ -37,8 +37,6 @@ public class UpdateMappingMigration implements Migration {
     @NonNull
     private final Set<String> indices;
     @NonNull
-    private final String mapping;
-    @NonNull
     private final String definition;
 
     @Override
@@ -48,7 +46,7 @@ public class UpdateMappingMigration implements Migration {
 
     @Override
     public String getUrl() {
-        return "/" + Joiner.on(",").join(indices) + "/_mapping/" + mapping;
+        return "/" + Joiner.on(",").join(indices) + "/_mapping";
     }
 
     @Override

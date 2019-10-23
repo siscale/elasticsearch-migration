@@ -36,8 +36,6 @@ public class IndexDocumentMigration implements Migration {
     @NonNull
     private final String index;
     @NonNull
-    private final String mapping;
-    @NonNull
     private final Optional<String> id;
     @NonNull
     private final Optional<OpType> opType;
@@ -46,12 +44,12 @@ public class IndexDocumentMigration implements Migration {
 
     @Override
     public Method getMethod() {
-        return Method.PUT;
+        return id.isPresent() ? Method.PUT : Method.POST;
     }
 
     @Override
     public String getUrl() {
-        return "/" + index + "/" + mapping + "/" + id.orElse("");
+        return "/" + index + "/_doc/" + id.orElse("");
     }
 
     @Override

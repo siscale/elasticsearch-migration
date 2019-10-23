@@ -57,8 +57,8 @@ public class YamlParserTest {
         ));
 
         assertThat(checksumedMigrationFile.getSha256Checksums(), containsInAnyOrder(
-                "53d16871b446d1f5db362f74c2f3b4a211e568b11736c6c1816a3d0107baa445",
-                "8da26f8be997e97f320e8a63ffcc67d302c548e78606509f773b7fab5ffd920e"
+                "1842b6bf13f817c358ca6b36632547386107a3b79cbebb8f6aec6d49e0442cde",
+                "809ea86173d206af07cf1d6403524ff9b7ad41534b268a93c13c14dde6d952ba"
         ));
     }
 

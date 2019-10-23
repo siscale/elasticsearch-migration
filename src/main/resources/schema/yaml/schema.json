@@ -84,14 +84,11 @@
                                 "minItems": 1,
                                 "additionalItems": true
                             },
-                            "mapping": {
-                                "type": "string"
-                            },
                             "definition": {
                                 "type": "string"
                             }
                         },
-                        "required": ["type", "mapping", "indices", "definition"],
+                        "required": ["type", "indices", "definition"],
                         "additionalProperties": false
                     },
                     {
@@ -107,9 +104,6 @@
                             "id": {
                                 "type": "string"
                             },
-                            "mapping": {
-                                "type": "string"
-                            },
                             "opType": {
                                 "type": "string",
                                 "enum": ["INDEX", "CREATE", "UPDATE", "DELETE"]
@@ -118,7 +112,7 @@
                                 "type": "string"
                             }
                         },
-                        "required": ["type", "index", "mapping", "definition"],
+                        "required": ["type", "index", "id", "definition"],
                         "additionalProperties": false
                     },
                     {
@@ -132,9 +126,6 @@
                                 "type": "string"
                             },
                             "id": {
-                                "type": "string"
-                            },
-                            "mapping": {
                                 "type": "string"
                             }
                         },
@@ -156,14 +147,11 @@
                             "id": {
                                 "type": "string"
                             },
-                            "mapping": {
-                                "type": "string"
-                            },
                             "definition": {
                                 "type": "string"
                             }
                         },
-                        "required": ["type", "index", "mapping", "id", "definition"],
+                        "required": ["type", "index", "id", "definition"],
                         "additionalProperties": false
                     }
                 ]

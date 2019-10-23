@@ -37,8 +37,6 @@ public class IndexDocumentMigrationFileEntry extends BaseMigrationFileEntry {
     @NonNull
     private String index;
     @NonNull
-    private String mapping;
-    @NonNull
     private Optional<String> id = Optional.empty();
     @NonNull
     private Optional<OpType> opType = Optional.empty();

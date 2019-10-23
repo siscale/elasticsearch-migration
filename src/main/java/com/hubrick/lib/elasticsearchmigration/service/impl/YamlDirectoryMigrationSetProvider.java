@@ -115,12 +115,11 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
                 return new DeleteIndexTemplateMigration(deleteIndexTemplateMigrationFileEntry.getTemplate());
             case UPDATE_MAPPING:
                 final UpdateMappingMigrationFileEntry updateMappingMigrationFileEntry = (UpdateMappingMigrationFileEntry) baseMigrationFileEntry;
-                return new UpdateMappingMigration(updateMappingMigrationFileEntry.getIndices(), updateMappingMigrationFileEntry.getMapping(), updateMappingMigrationFileEntry.getDefinition());
+                return new UpdateMappingMigration(updateMappingMigrationFileEntry.getIndices(), updateMappingMigrationFileEntry.getDefinition());
             case INDEX_DOCUMENT:
                 final IndexDocumentMigrationFileEntry indexDocumentMigrationFileEntry = (IndexDocumentMigrationFileEntry) baseMigrationFileEntry;
                 return new IndexDocumentMigration(
                         indexDocumentMigrationFileEntry.getIndex(),
-                        indexDocumentMigrationFileEntry.getMapping(),
                         indexDocumentMigrationFileEntry.getId(),
                         indexDocumentMigrationFileEntry.getOpType().map(e -> OpType.valueOf(e.name())),
                         indexDocumentMigrationFileEntry.getDefinition()
@@ -129,14 +128,12 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
                 final DeleteDocumentMigrationFileEntry deleteDocumentMigrationFileEntry = (DeleteDocumentMigrationFileEntry) baseMigrationFileEntry;
                 return new DeleteDocumentMigration(
                         deleteDocumentMigrationFileEntry.getIndex(),
-                        deleteDocumentMigrationFileEntry.getMapping(),
                         deleteDocumentMigrationFileEntry.getId()
                 );
             case UPDATE_DOCUMENT:
                 final UpdateDocumentMigrationFileEntry updateDocumentMigrationFileEntry = (UpdateDocumentMigrationFileEntry) baseMigrationFileEntry;
                 return new UpdateDocumentMigration(
                         updateDocumentMigrationFileEntry.getIndex(),
-                        updateDocumentMigrationFileEntry.getMapping(),
                         updateDocumentMigrationFileEntry.getId(),
                         updateDocumentMigrationFileEntry.getDefinition()
                 );

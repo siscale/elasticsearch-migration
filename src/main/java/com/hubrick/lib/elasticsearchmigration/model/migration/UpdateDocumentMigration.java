@@ -35,8 +35,6 @@ public class UpdateDocumentMigration implements Migration {
     @NonNull
     private final String index;
     @NonNull
-    private final String mapping;
-    @NonNull
     private final String id;
     @NonNull
     private final String definition;
@@ -48,7 +46,7 @@ public class UpdateDocumentMigration implements Migration {
 
     @Override
     public String getUrl() {
-        return "/" + index + "/" + mapping + "/" + id + "/_update";
+        return "/" + index  + "/_update/" + id;
     }
 
     @Override

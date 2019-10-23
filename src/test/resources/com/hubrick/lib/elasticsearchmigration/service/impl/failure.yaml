@@ -7,24 +7,22 @@ migrations:
               "number_of_shards": 3
           },
           "mappings": {
-              "test": {
-                  "dynamic": "strict",
-                  "_source": {
-                      "enabled": true
+              "dynamic": "strict",
+              "_source": {
+                  "enabled": true
+              },
+              "properties": {
+                  "user": {
+                      "type": "keyword",
+                      "index": true
                   },
-                  "properties": {
-                      "user": {
-                          "type": "keyword",
-                          "index": true
-                      },
-                      "post_date": {
-                          "type": "keyword",
-                          "index": true
-                      },
-                      "message": {
-                          "type": "keyword",
-                          "index": true
-                      }
+                  "post_date": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "message": {
+                      "type": "keyword",
+                      "index": true
                   }
               }
           }

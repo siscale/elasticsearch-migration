@@ -48,6 +48,7 @@ import com.hubrick.lib.elasticsearchmigration.model.migration.UpdateDocumentMigr
 import com.hubrick.lib.elasticsearchmigration.service.MigrationClient;
 import com.jayway.jsonpath.JsonPath;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -55,14 +56,13 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.ResponseException;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.*;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -160,6 +160,8 @@ public class DefaultMigrationClient implements MigrationClient {
             init();
 
             performUnderGlobalLock(() -> {
+                refreshIndices(MigrationEntryMeta.INDEX);
+
                 final List<MigrationSetEntry> orderedMigrationSetEntries = Lists.newArrayList(migrationSet.getMigrations());
                 orderedMigrationSetEntries.sort(Comparator.comparing(o -> o.getMigrationMeta().getVersion()));
 
@@ -199,7 +201,6 @@ public class DefaultMigrationClient implements MigrationClient {
                     applyMigrationSet(migrationSet);
                 } catch (InterruptedException e1) {
                     // Should never happen
-                    throw new IllegalStateException("Error occured during backoff period.", e1);
                 }
             } else {
                 throw e;
@@ -207,11 +208,19 @@ public class DefaultMigrationClient implements MigrationClient {
         }
     }
 
+    private void refreshIndices(final String... index) {
+        try {
+            final RefreshRequest refreshRequest = new RefreshRequest(index);
+            restHighLevelClient.indices().refresh(refreshRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            throw new MigrationFailedException("IO Exception during migration", e);
+        }
+    }
+
     private void insertNewMigrationEntry(MigrationSetEntry migrationSetEntry) throws JsonProcessingException {
         performRequest(
                 new IndexDocumentMigration(
                         MigrationEntryMeta.INDEX,
-                        MigrationEntryMeta.TYPE,
                         Optional.of(identifier + "-" + migrationSetEntry.getMigrationMeta().getVersion()),
                         Optional.of(OpType.CREATE),
                         objectMapper.writeValueAsString(
@@ -242,7 +251,6 @@ public class DefaultMigrationClient implements MigrationClient {
             performRequest(
                     new UpdateDocumentMigration(
                             MigrationEntryMeta.INDEX,
-                            MigrationEntryMeta.TYPE,
                             identifier + "-" + version,
                             objectMapper.writeValueAsString(update)
                     )
@@ -312,7 +320,7 @@ public class DefaultMigrationClient implements MigrationClient {
                     .searchType(SearchType.DEFAULT)
                     .source(SearchSourceBuilder.searchSource().query(queryBuilder).fetchSource(true).size(1000).sort(MigrationEntryMeta.VERSION_FIELD, SortOrder.ASC));
 
-            final SearchResponse searchResponse = restHighLevelClient.search(searchRequest);
+            final SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             if (searchResponse.status() == RestStatus.OK) {
                 return transformHitsFromEs(searchResponse.getHits(), MigrationEntry.class);
             } else {
@@ -326,18 +334,21 @@ public class DefaultMigrationClient implements MigrationClient {
     public void performRequest(final Migration migration) {
         try {
             final StringEntity stringEntity = new StringEntity(migration.getBody(), ContentType.APPLICATION_JSON);
-            restHighLevelClient.getLowLevelClient().performRequest(migration.getMethod().name(), migration.getUrl(), augmentParameters(migration.getParameters()), stringEntity, convertToHeaderArray(migration.getHeaders()));
+            final Request request = new Request(migration.getMethod().name(), migration.getUrl());
+            request.addParameters(augmentParameters(migration.getParameters()));
+            request.setEntity(stringEntity);
+
+            final RequestOptions.Builder builder = RequestOptions.DEFAULT.toBuilder();
+            migration.getHeaders().entries().forEach(e -> builder.addHeader(e.getKey(), e.getValue()));
+            request.setOptions(builder.build());
+
+            restHighLevelClient.getLowLevelClient().performRequest(request);
         } catch (ResponseException e) {
             throw new MigrationFailedException("Error performing migration", e);
         } catch (IOException e) {
             throw new MigrationFailedException("IO Exception during migration", e);
         }
     }
-
-    private Header[] convertToHeaderArray(Multimap<String, String> headers) {
-        return headers.entries().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).collect(Collectors.toSet()).toArray(new Header[0]);
-    }
-
 
     private Map<String, String> augmentParameters(Map<String, String> originalParameters) {
         final Map<String, String> augmentedParameters = new HashMap<>(originalParameters);
@@ -354,7 +365,7 @@ public class DefaultMigrationClient implements MigrationClient {
 
     public int getNumberOfNodesInCluster() {
         try {
-            final Response response = restHighLevelClient.getLowLevelClient().performRequest("GET", "/_nodes");
+            final Response response = restHighLevelClient.getLowLevelClient().performRequest(new Request("GET", "/_nodes"));
             return JsonPath.read(IOUtils.toString(response.getEntity().getContent(), Charsets.UTF_8), "$._nodes.total");
         } catch (ResponseException e) {
             throw new MigrationFailedException("Error performing migration", e);
@@ -365,7 +376,7 @@ public class DefaultMigrationClient implements MigrationClient {
 
     public int getNumberOfShards(String index) {
         try {
-            final Response response = restHighLevelClient.getLowLevelClient().performRequest("GET", "/" + index + "_settings");
+            final Response response = restHighLevelClient.getLowLevelClient().performRequest(new Request("GET", "/" + index + "_settings"));
             return JsonPath.read(IOUtils.toString(response.getEntity().getContent(), Charsets.UTF_8), "$." + index + ".settings.index.number_of_shards");
         } catch (ResponseException e) {
             throw new MigrationFailedException("Error performing migration", e);
@@ -392,9 +403,8 @@ public class DefaultMigrationClient implements MigrationClient {
             final IndexRequest indexRequest = new IndexRequest().index(LockEntryMeta.INDEX)
                     .create(true)
                     .id(identifier + "-global")
-                    .type(LockEntryMeta.TYPE)
                     .source(objectMapper.writeValueAsString(new LockEntry(Instant.now())), XContentType.JSON);
-            restHighLevelClient.index(indexRequest);
+            restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
             return true;
         } catch (ElasticsearchStatusException e) {
             if (e.status() == RestStatus.CONFLICT &&
@@ -410,8 +420,8 @@ public class DefaultMigrationClient implements MigrationClient {
 
     private boolean releaseGlobalLock() {
         try {
-            final DeleteRequest deleteRequest = new DeleteRequest().index(LockEntryMeta.INDEX).id(identifier + "-global").type(LockEntryMeta.TYPE);
-            restHighLevelClient.delete(deleteRequest);
+            final DeleteRequest deleteRequest = new DeleteRequest().index(LockEntryMeta.INDEX).id(identifier + "-global");
+            restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
             return true;
         } catch (IOException e) {
             throw new MigrationFailedException("IO Exception during migration", e);

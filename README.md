@@ -6,12 +6,18 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 
 ## Requirements
 * Java (Tested with JDK 8+)
-* Elasticsearch 6.x.x (Tested with 6.2.4+. Could work with lower versions since it's using the REST Api)
+
+| Elasticsearch version | Tested with | Library version
+| --------------------- |------------ | -----------------
+| 6.x.x                 | 6.2.4       | 1.0.0 - 1.0.5 
+| 7.x.x                 | 7.4.0       | 1.1.0      
+
+Latest version
 ```
 <dependency>
     <groupId>com.hubrick.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.0.5</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -28,41 +34,39 @@ The entry won't be removed and the changes applied to this point will stay in th
         "number_of_shards": 3
     },
     "mappings": {
-        "migration": {
-            "dynamic": "strict",
-            "_source": {
-                "enabled": true
+        "dynamic": "strict",
+        "_source": {
+            "enabled": true
+        },
+        "properties": {
+            "identifier": {
+                "type": "keyword",
+                "index": true
             },
-            "properties": {
-                "identifier": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "version": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "name": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "sha256Checksum": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "state": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "failureMessage": {
-                    "type": "text",
-                    "index": true
-                },
-                "created": {
-                    "type": "date",
-                    "format": "date_time",
-                    "index": true
-                }
+            "version": {
+                "type": "keyword",
+                "index": true
+            },
+            "name": {
+                "type": "keyword",
+                "index": true
+            },
+            "sha256Checksum": {
+                "type": "keyword",
+                "index": true
+            },
+            "state": {
+                "type": "keyword",
+                "index": true
+            },
+            "failureMessage": {
+                "type": "text",
+                "index": true
+            },
+            "created": {
+                "type": "date",
+                "format": "date_time",
+                "index": true
             }
         }
     }
@@ -79,17 +83,15 @@ In case the migration is aborted for any reason the lock won't be removed and ha
         "number_of_shards": 3
     },
     "mappings": {
-        "lock": {
-            "dynamic": "strict",
-            "_source": {
-                "enabled": true
-            },
-            "properties": {
-                "created": {
-                    "type": "date",
-                    "format": "date_time",
-                    "index": true
-                }
+        "dynamic": "strict",
+        "_source": {
+            "enabled": true
+        },
+        "properties": {
+            "created": {
+                "type": "date",
+                "format": "date_time",
+                "index": true
             }
         }
     }
@@ -125,20 +127,18 @@ migrations:
               "_source": {
                   "enabled": true
               },
-              "test": {
-                  "properties": {
-                      "user": {
-                          "type": "keyword",
-                          "index": true
-                      },
-                      "post_date": {
-                          "type": "keyword",
-                          "index": true
-                      },
-                      "message": {
-                          "type": "keyword",
-                          "index": true
-                      }
+              "properties": {
+                  "user": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "post_date": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "message": {
+                      "type": "keyword",
+                      "index": true
                   }
               }
           }
@@ -152,21 +152,18 @@ migrations:
           "number_of_shards": 1
         },
         "mappings": {
-          "test": {
-            "properties": {
-              "host_name": {
-                "type": "keyword"
-              },
-              "created_at": {
-                "type": "date",
-                "format": "EEE MMM dd HH:mm:ss Z YYYY"
-              }
+          "properties": {
+            "host_name": {
+              "type": "keyword"
+            },
+            "created_at": {
+              "type": "date",
+              "format": "EEE MMM dd HH:mm:ss Z YYYY"
             }
           }
         }
       }
   - type: UPDATE_MAPPING
-    mapping: 'test'
     indices:
       - 'test_index'
     definition: >
@@ -180,7 +177,6 @@ migrations:
   - type: INDEX_DOCUMENT
     index: 'test_index'
     id: '1'
-    mapping: 'test'
     definition: >
       {
           "user" : "kimchy",
@@ -189,7 +185,6 @@ migrations:
       }
   - type: UPDATE_DOCUMENT
     index: 'test_index'
-    mapping: 'test'
     id: '1'
     definition: >
       {
@@ -199,7 +194,6 @@ migrations:
       }
   - type: DELETE_DOCUMENT
     index: 'test_index'
-    mapping: 'test'
     id: '1'
   - type: DELETE_INDEX_TEMPLATE
     template: 'test_template'

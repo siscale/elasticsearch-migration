@@ -35,8 +35,6 @@ public class DeleteDocumentMigration implements Migration {
     @NonNull
     private final String index;
     @NonNull
-    private final String mapping;
-    @NonNull
     private final String id;
 
     @Override
@@ -46,7 +44,7 @@ public class DeleteDocumentMigration implements Migration {
 
     @Override
     public String getUrl() {
-        return "/" + index + "/" + mapping + "/" + id;
+        return "/" + index + "/_doc/" + id;
     }
 
     @Override

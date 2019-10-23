@@ -35,7 +35,5 @@ public class DeleteDocumentMigrationFileEntry extends BaseMigrationFileEntry {
     @NonNull
     private String index;
     @NonNull
-    private String mapping;
-    @NonNull
     private String id;
 }

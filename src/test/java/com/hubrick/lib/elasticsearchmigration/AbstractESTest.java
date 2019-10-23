@@ -21,46 +21,38 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.jayway.restassured.http.ContentType;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.elasticsearch.action.ActionFuture;
-import org.elasticsearch.action.admin.indices.create.CreateIndexAction;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequestBuilder;
-import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
-import org.elasticsearch.action.admin.indices.get.GetIndexResponse;
-import org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateAction;
-import org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequestBuilder;
-import org.elasticsearch.action.admin.indices.template.get.GetIndexTemplatesRequest;
-import org.elasticsearch.action.admin.indices.template.get.GetIndexTemplatesResponse;
-import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateAction;
-import org.elasticsearch.action.admin.indices.template.put.PutIndexTemplateRequestBuilder;
+import org.apache.http.HttpHost;
+import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
+import org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.IndicesOptions;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.*;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
-import org.elasticsearch.search.fetch.subphase.FetchSourceContext;
-import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
-import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -71,7 +63,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public abstract class AbstractESTest {
 
-    protected Client client;
+    protected RestHighLevelClient client;
 
     private static final ObjectMapper esObjectMapper = new ObjectMapper();
 
@@ -92,80 +84,72 @@ public abstract class AbstractESTest {
 
     @Before
     public final void initES() throws InterruptedException, IOException {
-        final Settings settings =
-                Settings.builder()
-                        .put("cluster.name", "elasticsearch")
-                        .build();
-
-
-        client = new PreBuiltTransportClient(settings).addTransportAddress(new TransportAddress(InetAddress.getByName("localhost"), 9300));
-        flushIndex();
+        client = new RestHighLevelClient(RestClient.builder(HttpHost.create("http://localhost:9200")));
+        refreshIndices();
 
         try {
-            final DeleteIndexRequestBuilder deleteIndexRequestBuilder = new DeleteIndexRequestBuilder(client, DeleteIndexAction.INSTANCE, "_all");
-            deleteIndexRequestBuilder.setIndicesOptions(IndicesOptions.strictExpand());
-            deleteIndexRequestBuilder.get();
+            final DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest("_all");
+            deleteIndexRequest.indicesOptions(IndicesOptions.strictExpand());
+            client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
         } catch (IndexNotFoundException indexNotFoundException) {
             // Do nothing
         }
 
         try {
-            final DeleteIndexTemplateRequestBuilder deleteIndexTemplateRequestBuilder = new DeleteIndexTemplateRequestBuilder(client, DeleteIndexTemplateAction.INSTANCE, "*");
-            deleteIndexTemplateRequestBuilder.get();
+            final DeleteIndexTemplateRequest deleteIndexTemplateRequest = new DeleteIndexTemplateRequest("*");
+            client.indices().deleteTemplate(deleteIndexTemplateRequest, RequestOptions.DEFAULT);
         } catch (IndexNotFoundException indexNotFoundException) {
             // Do nothing
         }
 
-        final DeleteByQueryRequestBuilder deleteByQueryRequestBuilder = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE);
-        deleteByQueryRequestBuilder.source().setIndices("_all").setQuery(QueryBuilders.matchAllQuery());
+        final DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest("_all").setQuery(QueryBuilders.matchAllQuery());
+        final BulkByScrollResponse bulkByScrollResponse = client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
 
-        assertThat(deleteByQueryRequestBuilder.get().isTimedOut(), is(false));
-        flushIndex();
+        assertThat(bulkByScrollResponse.isTimedOut(), is(false));
+        refreshIndices();
 
-        final SearchResponse searchResponse = client.prepareSearch("_all")
-                .setQuery(QueryBuilders.matchAllQuery())
-                .get();
-        assertThat(searchResponse.getHits().getTotalHits(), is(0L));
+        final SearchRequest searchRequest = new SearchRequest("_all");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+        searchRequest.source(searchSourceBuilder);
+
+        final SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        assertThat(searchResponse.getHits().getTotalHits().value, is(0L));
     }
 
     @SneakyThrows
-    protected void indexDocument(final String index, final String type, final String id, final String definition) {
-        client.prepareIndex(index, type)
-                .setId(id)
-                .setSource(esObjectMapper.readValue(definition, Map.class))
-                .execute().get();
+    protected void indexDocument(final String index, final String id, final String definition) {
 
-        client.admin().indices().prepareFlush(index).setWaitIfOngoing(true).setForce(true).execute().get();
+        final IndexRequest indexRequest = new IndexRequest(index).id(id).source(definition, XContentType.JSON);
+        client.index(indexRequest, RequestOptions.DEFAULT);
+
+        refreshIndices();
     }
 
     @SneakyThrows
-    protected void deleteDocument(final String index, final String type, final String id) {
-        client.prepareDelete(index, type, id).execute().get();
-        client.admin().indices().prepareFlush(index).setWaitIfOngoing(true).setForce(true).execute().get();
+    protected void deleteDocument(final String index, final String id) {
+
+        final DeleteRequest deleteRequest = new DeleteRequest(index).id(id);
+        client.delete(deleteRequest, RequestOptions.DEFAULT);
+        refreshIndices();
     }
 
     @SneakyThrows
     protected void createIndex(final String index, final String definition) {
-        final CreateIndexRequestBuilder createIndexRequestBuilder = new CreateIndexRequestBuilder(client, CreateIndexAction.INSTANCE)
-                .setIndex(index)
-                .setSource(definition, XContentType.JSON);
 
-        assertThat(createIndexRequestBuilder.get().isAcknowledged(), is(true));
-        client.admin().indices().prepareFlush(index).setWaitIfOngoing(true).setForce(true).execute().get();
+        final CreateIndexRequest createIndexRequest = new CreateIndexRequest(index).source(definition, XContentType.JSON);
+        final CreateIndexResponse createIndexResponse = client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+        assertThat(createIndexResponse.isAcknowledged(), is(true));
+        refreshIndices();
     }
 
     @SneakyThrows
     protected void createTemplate(final String template, final String definition) {
-        final PutIndexTemplateRequestBuilder putIndexTemplateRequestBuilder = new PutIndexTemplateRequestBuilder(client, PutIndexTemplateAction.INSTANCE, template)
-                .setSource(esObjectMapper.readValue(definition, Map.class));
 
-        assertThat(putIndexTemplateRequestBuilder.get().isAcknowledged(), is(true));
-    }
+        final PutIndexTemplateRequest putIndexTemplateRequest = new PutIndexTemplateRequest(template).source(definition, XContentType.JSON);
+        final AcknowledgedResponse acknowledgedResponse = client.indices().putTemplate(putIndexTemplateRequest, RequestOptions.DEFAULT);
 
-    @SneakyThrows
-    protected void flushIndex() {
-        given().port(9200).body("{\"wait_if_ongoing\":true}").contentType(ContentType.JSON).expect().statusCode(200).post("/_flush");
-        Thread.sleep(2000);
+        assertThat(acknowledgedResponse.isAcknowledged(), is(true));
     }
 
     @SneakyThrows
@@ -179,56 +163,75 @@ public abstract class AbstractESTest {
     }
 
     @SneakyThrows
-    protected boolean checkDocumentExists(String indexName, String type, String id) {
-        final ActionFuture<GetResponse> response = client.get(new GetRequest(indexName, type, id));
-        client.admin().indices().prepareFlush(indexName).setWaitIfOngoing(true).setForce(true).execute().get();
-        final GetResponse getFields = response.get();
+    protected boolean checkDocumentExists(String indexName, String id) {
 
-        assertThat("Response should be done", response.isDone(), is(true));
-        return getFields.isExists();
+        final GetRequest getRequest = new GetRequest(indexName).id(id);
+        final GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
+        refreshIndices();
+
+        return getResponse.isExists();
     }
 
     @SneakyThrows
     protected boolean checkIndexExists(String indexName) {
-        final ActionFuture<GetIndexResponse> response = client.admin().indices().getIndex(new GetIndexRequest().indices(indexName));
-
         try {
-            return response.get() != null;
-        } catch (ExecutionException e) {
-            return false;
+            final GetIndexRequest getIndexRequest = new GetIndexRequest(indexName);
+            client.indices().get(getIndexRequest, RequestOptions.DEFAULT);
+            return true;
+        } catch (ElasticsearchStatusException e) {
+            if(e.status() == RestStatus.NOT_FOUND) {
+                return false;
+            } else {
+                throw e;
+            }
         }
     }
 
     @SneakyThrows
     protected boolean checkTemplateExists(String name) {
-        final ActionFuture<GetIndexTemplatesResponse> response = client.admin().indices().getTemplates(new GetIndexTemplatesRequest(name));
-        return !response.get().getIndexTemplates().isEmpty();
+        try {
+            final GetIndexTemplatesRequest getIndexTemplatesRequest = new GetIndexTemplatesRequest(name);
+            client.indices().getIndexTemplate(getIndexTemplatesRequest, RequestOptions.DEFAULT);
+            return true;
+        } catch (ElasticsearchStatusException e) {
+            if(e.status() == RestStatus.NOT_FOUND) {
+                return false;
+            } else {
+                throw e;
+            }
+        }
     }
 
     @SneakyThrows
-    protected String getFromIndex(String indexName, String type, String id) {
-        final ActionFuture<GetResponse> response = client.get(new GetRequest(indexName, type, id).fetchSourceContext(FetchSourceContext.FETCH_SOURCE));
-        client.admin().indices().prepareFlush(indexName).setWaitIfOngoing(true).setForce(true).execute().get();
-        final GetResponse getFields = response.get();
+    protected String getFromIndex(String indexName, String id) {
 
-        assertThat("Response should be done", response.isDone(), is(true));
-        assertThat("Get " + id + " should exist (" + indexName + ", " + type + ")", getFields.isExists(), is(true));
-        assertThat("Source field should not be empty", getFields.isSourceEmpty(), is(false));
+        final GetRequest getRequest = new GetRequest(indexName).id(id);
+        final GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
+        refreshIndices();
 
-        final String sourceAsString = getFields.getSourceAsString();
+        assertThat("Get " + id + " should exist (" + indexName + ")", getResponse.isExists(), is(true));
+        assertThat("Source field should not be empty", getResponse.isSourceEmpty(), is(false));
+
+        final String sourceAsString = getResponse.getSourceAsString();
 
         assertThat("response source should not be null", sourceAsString, notNullValue());
         return sourceAsString;
     }
 
     @SneakyThrows
-    protected <T> T getFromIndex(String indexName, String type, String id, Class<T> clazz) {
-        final ActionFuture<GetResponse> response = client.get(new GetRequest(indexName, type, id));
-        client.admin().indices().prepareFlush(indexName).setWaitIfOngoing(true).setForce(true).execute().get();
-        final GetResponse getFields = response.get();
+    protected <T> T getFromIndex(String indexName, String id, Class<T> clazz) {
+        final GetRequest getRequest = new GetRequest(indexName).id(id);
+        final GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
+        refreshIndices();
 
-        final String sourceAsString = getFields.getSourceAsString();
+        final String sourceAsString = getResponse.getSourceAsString();
 
         return esObjectMapper.readValue(sourceAsString, clazz);
+    }
+
+    @SneakyThrows
+    protected void refreshIndices() {
+        final RefreshRequest refreshRequest = new RefreshRequest();
+        client.indices().refresh(refreshRequest, RequestOptions.DEFAULT);
     }
 }

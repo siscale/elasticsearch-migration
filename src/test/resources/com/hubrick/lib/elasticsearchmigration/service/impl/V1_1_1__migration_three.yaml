@@ -2,18 +2,15 @@ migrations:
   - type: INDEX_DOCUMENT
     index: 'test_index_1'
     id: '1'
-    mapping: 'test'
     definition: '{}'
 
   - type: UPDATE_DOCUMENT
     index: 'test_index_1'
-    mapping: 'test'
     id: '1'
     definition: '{}'
 
   - type: DELETE_DOCUMENT
     index: 'test_index_1'
-    mapping: 'test'
     id: '1'
 
   - type: DELETE_INDEX_TEMPLATE

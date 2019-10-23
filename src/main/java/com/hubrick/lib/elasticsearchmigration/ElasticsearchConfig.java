@@ -35,7 +35,6 @@ public class ElasticsearchConfig {
 
     @NonNull
     private final Set<URL> urls;
-    private final Integer maxRetryTimeoutMillis;
     private final String pathPrefix;
 
     @NonNull

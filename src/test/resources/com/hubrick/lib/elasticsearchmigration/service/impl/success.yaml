@@ -7,24 +7,22 @@ migrations:
               "number_of_shards": 3
           },
           "mappings": {
-              "dynamic": false,
+              "dynamic": "strict",
               "_source": {
                   "enabled": true
               },
-              "test": {
-                  "properties": {
-                      "user": {
-                          "type": "keyword",
-                          "index": true
-                      },
-                      "post_date": {
-                          "type": "keyword",
-                          "index": true
-                      },
-                      "message": {
-                          "type": "keyword",
-                          "index": true
-                      }
+              "properties": {
+                  "user": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "post_date": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "message": {
+                      "type": "keyword",
+                      "index": true
                   }
               }
           }
@@ -38,7 +36,6 @@ migrations:
           "number_of_shards": 1
         },
         "mappings": {
-          "test": {
             "properties": {
               "host_name": {
                 "type": "keyword"
@@ -48,11 +45,9 @@ migrations:
                 "format": "EEE MMM dd HH:mm:ss Z YYYY"
               }
             }
-          }
         }
       }
   - type: UPDATE_MAPPING
-    mapping: 'test'
     indices:
       - 'test_index'
     definition: >
@@ -66,7 +61,6 @@ migrations:
   - type: INDEX_DOCUMENT
     index: 'test_index'
     id: '1'
-    mapping: 'test'
     definition: >
       {
           "user" : "kimchy",
@@ -75,7 +69,6 @@ migrations:
       }
   - type: UPDATE_DOCUMENT
     index: 'test_index'
-    mapping: 'test'
     id: '1'
     definition: >
       {
@@ -85,7 +78,6 @@ migrations:
       }
   - type: DELETE_DOCUMENT
     index: 'test_index'
-    mapping: 'test'
     id: '1'
   - type: DELETE_INDEX_TEMPLATE
     template: 'test_template'

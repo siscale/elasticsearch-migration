@@ -197,7 +197,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
                         new MigrationSetEntry(
-                                ImmutableList.of(new UpdateMappingMigration(ImmutableSet.of("test_index"), "test", loadResource("update_mapping.json"))),
+                                ImmutableList.of(new UpdateMappingMigration(ImmutableSet.of("test_index"), loadResource("update_mapping.json"))),
                                 new MigrationMeta(
                                         ImmutableSet.of(
                                                 "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
@@ -226,7 +226,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
                         new MigrationSetEntry(
-                                ImmutableList.of(new IndexDocumentMigration("test_index", "test", Optional.of("1"), Optional.empty(), loadResource("index_document.json"))),
+                                ImmutableList.of(new IndexDocumentMigration("test_index", Optional.of("1"), Optional.empty(), loadResource("index_document.json"))),
                                 new MigrationMeta(
                                         ImmutableSet.of(
                                                 "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
@@ -242,7 +242,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
-        assertThat(checkDocumentExists("test_index", "test", "1"), is(true));
+        assertThat(checkDocumentExists("test_index", "1"), is(true));
         assertMigrationEntry();
     }
 
@@ -250,12 +250,12 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     public void testApplyDeleteDocumentMigration() throws ExecutionException, InterruptedException, IOException {
 
         createIndex("test_index", loadResource("create_index.json"));
-        indexDocument("test_index", "test", "1", loadResource("index_document.json"));
+        indexDocument("test_index", "1", loadResource("index_document.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
                         new MigrationSetEntry(
-                                ImmutableList.of(new DeleteDocumentMigration("test_index", "test", "1")),
+                                ImmutableList.of(new DeleteDocumentMigration("test_index", "1")),
                                 new MigrationMeta(
                                         ImmutableSet.of(
                                                 "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007"
@@ -271,7 +271,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
-        assertThat(checkDocumentExists("test_index", "test", "1"), is(false));
+        assertThat(checkDocumentExists("test_index", "1"), is(false));
         assertMigrationEntry();
     }
 
@@ -281,7 +281,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -311,7 +311,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("failed_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("failed_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -338,7 +338,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient(false, 15000, 5);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("failed_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("failed_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -365,7 +365,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -403,8 +403,8 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(LockEntryMeta.INDEX, LockEntryMeta.TYPE, "test-global", loadResource("lock_entry.json"));
-        scheduler.schedule(() -> deleteDocument(LockEntryMeta.INDEX, LockEntryMeta.TYPE, "test-global"), 30, TimeUnit.SECONDS);
+        indexDocument(LockEntryMeta.INDEX, "test-global", loadResource("lock_entry.json"));
+        scheduler.schedule(() -> deleteDocument(LockEntryMeta.INDEX, "test-global"), 30, TimeUnit.SECONDS);
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -434,7 +434,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient(true, 5000, 3);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(LockEntryMeta.INDEX, LockEntryMeta.TYPE, "test-global", loadResource("lock_entry.json"));
+        indexDocument(LockEntryMeta.INDEX, "test-global", loadResource("lock_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -463,7 +463,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -490,7 +490,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -517,8 +517,8 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -545,8 +545,8 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         final DefaultMigrationClient defaultMigrationClient = createClient();
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
-        indexDocument(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
 
         final MigrationSet migrationSet = new MigrationSet(
                 ImmutableList.of(
@@ -568,7 +568,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     }
 
     private void assertMigrationEntry() {
-        final MigrationEntry migrationEntry = getFromIndex(MigrationEntryMeta.INDEX, MigrationEntryMeta.TYPE, "test-1.0.0", MigrationEntry.class);
+        final MigrationEntry migrationEntry = getFromIndex(MigrationEntryMeta.INDEX, "test-1.0.0", MigrationEntry.class);
         assertThat(migrationEntry.getName(), is("singularity"));
         assertThat(migrationEntry.getVersion(), is("1.0.0"));
         assertThat(migrationEntry.getIdentifier(), is(IDENTIFIER));

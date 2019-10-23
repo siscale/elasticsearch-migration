@@ -25,7 +25,6 @@ import lombok.experimental.UtilityClass;
 public class MigrationEntryMeta {
 
     public static final String INDEX = "elasticsearch_migration_version";
-    public static final String TYPE = "migration";
 
     public static final String IDENTIFIER_FIELD = "identifier";
     public static final String VERSION_FIELD = "version";

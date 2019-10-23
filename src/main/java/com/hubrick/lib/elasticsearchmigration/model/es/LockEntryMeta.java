@@ -25,7 +25,6 @@ import lombok.experimental.UtilityClass;
 public class LockEntryMeta {
 
     public static final String INDEX = "elasticsearch_migration_lock";
-    public static final String TYPE = "lock";
 
     public static final String CREATED_FIELD = "created";
 }

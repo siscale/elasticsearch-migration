@@ -37,7 +37,5 @@ public class UpdateMappingMigrationFileEntry extends BaseMigrationFileEntry {
     @NonNull
     private Set<String> indices;
     @NonNull
-    private String mapping;
-    @NonNull
     private String definition;
 }

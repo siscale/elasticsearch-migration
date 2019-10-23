@@ -3,41 +3,39 @@
         "number_of_shards": 3
     },
     "mappings": {
-        "migration": {
-            "dynamic": "strict",
-            "_source": {
-                "enabled": true
+        "dynamic": "strict",
+        "_source": {
+            "enabled": true
+        },
+        "properties": {
+            "identifier": {
+                "type": "keyword",
+                "index": true
             },
-            "properties": {
-                "identifier": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "version": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "name": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "sha256Checksum": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "state": {
-                    "type": "keyword",
-                    "index": true
-                },
-                "failureMessage": {
-                    "type": "text",
-                    "index": true
-                },
-                "created": {
-                    "type": "date",
-                    "format": "date_time",
-                    "index": true
-                }
+            "version": {
+                "type": "keyword",
+                "index": true
+            },
+            "name": {
+                "type": "keyword",
+                "index": true
+            },
+            "sha256Checksum": {
+                "type": "keyword",
+                "index": true
+            },
+            "state": {
+                "type": "keyword",
+                "index": true
+            },
+            "failureMessage": {
+                "type": "text",
+                "index": true
+            },
+            "created": {
+                "type": "date",
+                "format": "date_time",
+                "index": true
             }
         }
     }
