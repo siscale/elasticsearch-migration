@@ -5,14 +5,14 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    <groupId>com.hubrick.lib</groupId>
+    <groupId>com.github.eemmiirr.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <inceptionYear>2018</inceptionYear>
+    <inceptionYear>2019</inceptionYear>
 
     <name>Elasticsearch schema migration library</name>
-    <url>https://github.com/hubrick/elasticsearch-migration</url>
+    <url>https://github.com/eemmiirr/elasticsearch-migration</url>
     <description>A flyway inspired Elasticsearch schema migration library</description>
 
     <licenses>
@@ -26,7 +26,7 @@
         <developer>
             <id>1</id>
             <name>Emir Dizdarevic</name>
-            <email>oss@hubrick.com</email>
+            <email>4640075+eemmiirr@users.noreply.github.com</email>
         </developer>
     </developers>
 
@@ -329,8 +329,8 @@
                 <configuration>
                     <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
                     <properties>
-                        <owner>Etaia AS</owner>
-                        <email>oss@hubrick.com</email>
+                        <owner>Emir Dizdarevic</owner>
+                        <email>4640075+eemmiirr@users.noreply.github.com</email>
                     </properties>
                     <includes>
                         <include>**/*.java</include>
@@ -391,7 +391,7 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
         <repository>
-            <id>hubrick-oss-snapshot</id>
+            <id>oss-snapshot</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
             <releases>
                 <enabled>false</enabled>
@@ -401,7 +401,7 @@
             </snapshots>
         </repository>
         <repository>
-            <id>hubrick-oss-release</id>
+            <id>oss-release</id>
             <url>https://oss.sonatype.org/content/groups/staging</url>
             <releases>
                 <enabled>true</enabled>
@@ -413,7 +413,7 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>hubrick-plugin-snapshot</id>
+            <id>plugin-snapshot</id>
             <url>https://oss.sonatype.org/content/groups/public</url>
             <releases>
                 <enabled>false</enabled>
@@ -423,7 +423,7 @@
             </snapshots>
         </pluginRepository>
         <pluginRepository>
-            <id>hubrick-plugin-release</id>
+            <id>plugin-release</id>
             <url>https://oss.sonatype.org/content/groups/staging</url>
             <releases>
                 <enabled>true</enabled>
@@ -448,8 +448,8 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/hubrick/elasticsearch-migration.git</connection>
-        <developerConnection>scm:git:git@github.com:hubrick/elasticsearch-migration.git</developerConnection>
-        <url>http://github.com/hubrick/elasticsearch-migration.git</url>
+        <connection>scm:git:git://github.com/eemmiirr/elasticsearch-migration.git</connection>
+        <developerConnection>scm:git:git@github.com:eemmiirr/elasticsearch-migration.git</developerConnection>
+        <url>http://github.com/eemmiirr/elasticsearch-migration.git</url>
     </scm>
 </project>
