@@ -11,3 +11,6 @@ migrations:
     template: 'test_template'
     definition: '{}'
 
+  - type: CREATE_INGEST_PIPELINE
+    id: 'test_pipeline'
+    definition: '{}'

@@ -18,6 +18,7 @@ package com.github.eemmiirr.lib.elasticsearchmigration.service.impl;
 import com.github.eemmiirr.lib.elasticsearchmigration.exception.*;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.*;
 import java.net.*;
+
 import org.junit.*;
 
 
@@ -38,16 +39,20 @@ public class YamlParserTest {
         assertThat(checksumedMigrationFile.getMigrationFile().getMigrations(), contains(
                 instanceOf(CreateIndexMigrationFileEntry.class),
                 instanceOf(CreateOrUpdateIndexTemplateMigrationFileEntry.class),
+                instanceOf(CreateIngestPipelineMigrationFileEntry.class),
                 instanceOf(UpdateMappingMigrationFileEntry.class),
+                instanceOf(AliasesMigrationFileEntry.class),
                 instanceOf(IndexDocumentMigrationFileEntry.class),
                 instanceOf(UpdateDocumentMigrationFileEntry.class),
                 instanceOf(DeleteDocumentMigrationFileEntry.class),
+                instanceOf(ReindexMigrationFileEntry.class),
                 instanceOf(DeleteIndexTemplateMigrationFileEntry.class),
-                instanceOf(DeleteIndexMigrationFileEntry.class)
+                instanceOf(DeleteIndexMigrationFileEntry.class),
+                instanceOf(DeleteIngestPipelineMigrationFileEntry.class)
         ));
 
         assertThat(checksumedMigrationFile.getSha256Checksum(), is(
-                "809ea86173d206af07cf1d6403524ff9b7ad41534b268a93c13c14dde6d952ba"
+                "8a2f6654cb772e142e0d7f5d03b15449cdfffd6428567be1c2018fbbf8faf58b"
         ));
     }
 

@@ -1,0 +1,32 @@
+migrations:
+  - type: UPDATE_MAPPING
+    indices:
+      - 'test_index_1'
+      - 'test_index_2'
+    definition: >
+          {
+            "properties": {
+              "email": {
+                "type": "keyword"
+              }
+            }
+          }
+
+  - type: ALIASES
+    definition: >
+        {
+          "actions": [
+            {
+              "add": {
+                "index": "test_index_1",
+                "alias": "test_index_alias"
+              }
+            },
+            {
+              "add": {
+                "index": "test_index_2",
+                "alias": "test_index_alias"
+              }
+            }
+          ]
+        }

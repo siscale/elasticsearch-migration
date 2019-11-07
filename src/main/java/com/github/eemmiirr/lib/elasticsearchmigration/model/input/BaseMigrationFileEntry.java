@@ -39,7 +39,11 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = UpdateMappingMigrationFileEntry.class, name = "UPDATE_MAPPING"),
         @JsonSubTypes.Type(value = IndexDocumentMigrationFileEntry.class, name = "INDEX_DOCUMENT"),
         @JsonSubTypes.Type(value = DeleteDocumentMigrationFileEntry.class, name = "DELETE_DOCUMENT"),
-        @JsonSubTypes.Type(value = UpdateDocumentMigrationFileEntry.class, name = "UPDATE_DOCUMENT")
+        @JsonSubTypes.Type(value = UpdateDocumentMigrationFileEntry.class, name = "UPDATE_DOCUMENT"),
+        @JsonSubTypes.Type(value = AliasesMigrationFileEntry.class, name = "ALIASES"),
+        @JsonSubTypes.Type(value = CreateIngestPipelineMigrationFileEntry.class, name = "CREATE_INGEST_PIPELINE"),
+        @JsonSubTypes.Type(value = DeleteIngestPipelineMigrationFileEntry.class, name = "DELETE_INGEST_PIPELINE"),
+        @JsonSubTypes.Type(value = ReindexMigrationFileEntry.class, name = "REINDEX")
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, visible = true, property = "type")
 public abstract class BaseMigrationFileEntry {

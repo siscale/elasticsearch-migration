@@ -15,7 +15,6 @@
  */
 package com.github.eemmiirr.lib.elasticsearchmigration;
 
-import com.github.eemmiirr.lib.elasticsearchmigration.*;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.es.MigrationEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.es.MigrationEntryMeta;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.es.State;
@@ -26,7 +25,6 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
@@ -48,36 +46,47 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         final MigrationEntry migrationEntry100 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.0.0", MigrationEntry.class);
         final MigrationEntry migrationEntry110 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.1.0", MigrationEntry.class);
         final MigrationEntry migrationEntry111 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.1.1", MigrationEntry.class);
+        final MigrationEntry migrationEntry112 = getFromIndex(MigrationEntryMeta.INDEX, "test-1.1.2", MigrationEntry.class);
 
         final Instant now = Instant.now();
         assertThat(migrationEntry100.getIdentifier(), is("test"));
         assertThat(migrationEntry100.getVersion(), is("1.0.0"));
-        assertThat(migrationEntry100.getName(), is("migration_one"));
+        assertThat(migrationEntry100.getName(), is("creation"));
         assertThat(migrationEntry100.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry100.getFailureMessage(), is(""));
         assertThat(migrationEntry100.getState(), is(State.SUCCESS));
         assertThat(migrationEntry100.getSha256Checksum(), is(
-                "e48d69ff3d07bb0e90bb4942f316d2166b0b46359467d176052e201f61583c77"
+                "37163ccf9cafa67838446b1b5aeed228108e6a5a14fc905f901a58819279d1c9"
         ));
 
         assertThat(migrationEntry110.getIdentifier(), is("test"));
         assertThat(migrationEntry110.getVersion(), is("1.1.0"));
-        assertThat(migrationEntry110.getName(), is("migration_two"));
+        assertThat(migrationEntry110.getName(), is("meta_altering"));
         assertThat(migrationEntry110.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry110.getFailureMessage(), is(""));
         assertThat(migrationEntry110.getState(), is(State.SUCCESS));
         assertThat(migrationEntry110.getSha256Checksum(), is(
-                "863e13aaaadf7faa8ae3499ed4f4f51e7319fae385f9ae0ecb12cec079753997"
+                "d2a5aa74d14d3f24e1520e584792c10f8afbe3e8aebad1b81b2e07b3944b0eb8"
         ));
 
         assertThat(migrationEntry111.getIdentifier(), is("test"));
         assertThat(migrationEntry111.getVersion(), is("1.1.1"));
-        assertThat(migrationEntry111.getName(), is("migration_three"));
+        assertThat(migrationEntry111.getName(), is("data_altering"));
         assertThat(migrationEntry111.getCreated(), lessThanOrEqualTo(now));
         assertThat(migrationEntry111.getFailureMessage(), is(""));
         assertThat(migrationEntry111.getState(), is(State.SUCCESS));
         assertThat(migrationEntry111.getSha256Checksum(), is(
-                "cb8fc0b8bd4325807a6a16a480aa80a453659a3d90da8329023f600461d094ed"
+                "a8e24dc8351a214b8823001e940e494a8db9446fc3fa9854f8fe68041ce6f6f9"
+        ));
+
+        assertThat(migrationEntry112.getIdentifier(), is("test"));
+        assertThat(migrationEntry112.getVersion(), is("1.1.2"));
+        assertThat(migrationEntry112.getName(), is("delete"));
+        assertThat(migrationEntry112.getCreated(), lessThanOrEqualTo(now));
+        assertThat(migrationEntry112.getFailureMessage(), is(""));
+        assertThat(migrationEntry112.getState(), is(State.SUCCESS));
+        assertThat(migrationEntry112.getSha256Checksum(), is(
+                "706b413aefb36d7cbb34ac810249db1f8e70e2bc953f4183f4ffdc082614af61"
         ));
     }
 }

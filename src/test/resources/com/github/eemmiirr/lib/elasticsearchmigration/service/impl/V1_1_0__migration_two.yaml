@@ -5,5 +5,11 @@ migrations:
       - 'test_index_2'
     definition: '{}'
 
+  - type: ALIASES
+    definition: '{}'
+
+  - type: REINDEX
+    definition: '{}'
+
 
 

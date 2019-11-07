@@ -1,0 +1,13 @@
+migrations:
+  - type: DELETE_INDEX_TEMPLATE
+    template: 'test_template'
+
+  - type: DELETE_INDEX
+    index: 'test_index_1'
+
+  - type: DELETE_INDEX
+    index: 'test_index_2'
+
+  - type: DELETE_INGEST_PIPELINE
+    id: 'test_pipeline'
+

@@ -47,6 +47,20 @@ migrations:
             }
         }
       }
+  - type: CREATE_INGEST_PIPELINE
+    id: 'test_pipeline'
+    definition: >
+        {
+          "description" : "rename xxx",
+          "processors" : [
+            {
+              "rename": {
+                "field": "xxx",
+                "target_field": "yyy"
+              }
+            }
+          ]
+        }
   - type: UPDATE_MAPPING
     indices:
       - 'test_index'
@@ -58,6 +72,24 @@ migrations:
           }
         }
       }
+  - type: ALIASES
+    definition: >
+        {
+          "actions": [
+            {
+              "add": {
+                "index": "test_index_1",
+                "alias": "test_index_alias"
+              }
+            },
+            {
+              "add": {
+                "index": "test_index_2",
+                "alias": "test_index_alias"
+              }
+            }
+          ]
+        }
   - type: INDEX_DOCUMENT
     index: 'test_index'
     id: '1'
@@ -79,9 +111,21 @@ migrations:
   - type: DELETE_DOCUMENT
     index: 'test_index'
     id: '1'
+  - type: REINDEX
+    definition: >
+        {
+          "source": {
+            "index": "test_index_1"
+          },
+          "dest": {
+            "index": "test_index_2"
+          }
+        }
   - type: DELETE_INDEX_TEMPLATE
     template: 'test_template'
   - type: DELETE_INDEX
     index: 'test_index'
+  - type: DELETE_INGEST_PIPELINE
+    id: 'test_pipeline'
 
 

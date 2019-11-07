@@ -79,3 +79,18 @@ migrations:
               }
             }
           }
+
+  - type: CREATE_INGEST_PIPELINE
+    id: 'test_pipeline'
+    definition: >
+        {
+          "description" : "rename xxx",
+          "processors" : [
+            {
+              "rename": {
+                "field": "xxx",
+                "target_field": "yyy"
+              }
+            }
+          ]
+        }

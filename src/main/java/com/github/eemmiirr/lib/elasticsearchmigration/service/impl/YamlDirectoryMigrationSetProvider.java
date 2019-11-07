@@ -15,27 +15,35 @@
  */
 package com.github.eemmiirr.lib.elasticsearchmigration.service.impl;
 
+import com.github.eemmiirr.lib.elasticsearchmigration.model.input.AliasesMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.BaseMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.ChecksumedMigrationFile;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.CreateIndexMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.CreateOrUpdateIndexTemplateMigrationFileEntry;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.input.CreateIngestPipelineMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.DeleteDocumentMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.DeleteIndexMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.DeleteIndexTemplateMigrationFileEntry;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.input.DeleteIngestPipelineMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.IndexDocumentMigrationFileEntry;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.input.ReindexMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.UpdateDocumentMigrationFileEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.input.UpdateMappingMigrationFileEntry;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.AliasesMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.CreateIndexMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.CreateOrUpdateIndexTemplateMigration;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.CreateIngestPipelineMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.DeleteDocumentMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.DeleteIndexMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.DeleteIndexTemplateMigration;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.DeleteIngestPipelineMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.IndexDocumentMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.Migration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.MigrationMeta;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.MigrationSet;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.MigrationSetEntry;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.OpType;
+import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.ReindexMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.UpdateDocumentMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.model.migration.UpdateMappingMigration;
 import com.github.eemmiirr.lib.elasticsearchmigration.service.MigrationSetProvider;
@@ -136,6 +144,27 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
                         updateDocumentMigrationFileEntry.getIndex(),
                         updateDocumentMigrationFileEntry.getId(),
                         updateDocumentMigrationFileEntry.getDefinition()
+                );
+            case ALIASES:
+                final AliasesMigrationFileEntry aliasesMigrationFileEntry = (AliasesMigrationFileEntry) baseMigrationFileEntry;
+                return new AliasesMigration(
+                        aliasesMigrationFileEntry.getDefinition()
+                );
+            case CREATE_INGEST_PIPELINE:
+                final CreateIngestPipelineMigrationFileEntry createIngestPipelineMigrationFileEntry = (CreateIngestPipelineMigrationFileEntry) baseMigrationFileEntry;
+                return new CreateIngestPipelineMigration(
+                        createIngestPipelineMigrationFileEntry.getId(),
+                        createIngestPipelineMigrationFileEntry.getDefinition()
+                );
+            case DELETE_INGEST_PIPELINE:
+                final DeleteIngestPipelineMigrationFileEntry deleteIngestPipelineMigrationFileEntry = (DeleteIngestPipelineMigrationFileEntry) baseMigrationFileEntry;
+                return new DeleteIngestPipelineMigration(
+                        deleteIngestPipelineMigrationFileEntry.getId()
+                );
+            case REINDEX:
+                final ReindexMigrationFileEntry reindexMigrationFileEntry = (ReindexMigrationFileEntry) baseMigrationFileEntry;
+                return new ReindexMigration(
+                        reindexMigrationFileEntry.getDefinition()
                 );
             default:
                 throw new IllegalStateException("Unknown migration type " + baseMigrationFileEntry.getType());

@@ -55,21 +55,25 @@ public class YamlDirectoryMigrationSetProviderTest {
                 "migration_three"
         ));
         assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getSha256Checksum()).collect(Collectors.toList()), contains(
-                "e874b5f9c634b1b0058887b5d9bcdde6bae0850d83b89b17dcbf062fb579c739",
-                "348c126c00c989b521c50d64018d2579d76ce26a9c00b9a99eaeb3073f43b847",
-                "ba4d3f7585a354d407805cbaa6443ba77b9db63990944c74dbe485e3591bc494"
+                "de6e1367a5bad35d63931ea9fc9ef2e4f53b0a6e2d3e4b5ecbea5e918d3e3917",
+                "248be5cb24eeeab60cefb725a883433a12aa35f4d0f922a95b9dcea34e19a5eb",
+                "b87fd41e28149029486b0a5c78d92bdc749469e0531dd6be954196ae664841e4"
         ));
         assertThat(migrationSet.getMigrations().stream().flatMap(e -> e.getMigration().stream()).collect(Collectors.toList()), contains(
                 new CreateIndexMigration("test_index_1", "{}"),
                 new CreateIndexMigration("test_index_2", "{}"),
                 new CreateOrUpdateIndexTemplateMigration("test_template", "{}"),
+                new CreateIngestPipelineMigration("test_pipeline", "{}"),
                 new UpdateMappingMigration(ImmutableSet.of("test_index_1", "test_index_2"), "{}"),
+                new AliasesMigration("{}"),
+                new ReindexMigration("{}"),
                 new IndexDocumentMigration("test_index_1", Optional.of("1"), Optional.empty(), "{}"),
                 new UpdateDocumentMigration("test_index_1", "1", "{}"),
                 new DeleteDocumentMigration("test_index_1", "1"),
                 new DeleteIndexTemplateMigration("test_template"),
                 new DeleteIndexMigration("test_index_1"),
-                new DeleteIndexMigration("test_index_2")
+                new DeleteIndexMigration("test_index_2"),
+                new DeleteIngestPipelineMigration("test_pipeline")
         ));
 
     }

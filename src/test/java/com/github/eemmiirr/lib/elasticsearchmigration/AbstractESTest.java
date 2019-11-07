@@ -21,10 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.base.Charsets;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.template.delete.DeleteIndexTemplateRequest;
@@ -32,14 +34,20 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.ingest.DeletePipelineRequest;
+import org.elasticsearch.action.ingest.GetPipelineRequest;
+import org.elasticsearch.action.ingest.GetPipelineResponse;
+import org.elasticsearch.action.ingest.PutPipelineRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.IndicesOptions;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
+import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.*;
+import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -102,6 +110,13 @@ public abstract class AbstractESTest {
             // Do nothing
         }
 
+        try {
+            final DeletePipelineRequest deletePipelineRequest = new DeletePipelineRequest("*");
+            client.ingest().deletePipeline(deletePipelineRequest, RequestOptions.DEFAULT);
+        } catch (IndexNotFoundException indexNotFoundException) {
+            // Do nothing
+        }
+
         final DeleteByQueryRequest deleteByQueryRequest = new DeleteByQueryRequest("_all").setQuery(QueryBuilders.matchAllQuery());
         final BulkByScrollResponse bulkByScrollResponse = client.deleteByQuery(deleteByQueryRequest, RequestOptions.DEFAULT);
 
@@ -153,6 +168,15 @@ public abstract class AbstractESTest {
     }
 
     @SneakyThrows
+    protected void createPipeline(final String id, final String definition) {
+
+        final PutPipelineRequest putPipelineRequest = new PutPipelineRequest(id, new BytesArray(definition.getBytes(Charsets.UTF_8)), XContentType.JSON);
+        final AcknowledgedResponse acknowledgedResponse = client.ingest().putPipeline(putPipelineRequest, RequestOptions.DEFAULT);
+        assertThat(acknowledgedResponse.isAcknowledged(), is(true));
+        refreshIndices();
+    }
+
+    @SneakyThrows
     protected String loadResource(String fileName) {
         try (final InputStream resourceStream = this.getClass().getResourceAsStream(fileName)) {
             if (resourceStream == null) {
@@ -179,7 +203,7 @@ public abstract class AbstractESTest {
             client.indices().get(getIndexRequest, RequestOptions.DEFAULT);
             return true;
         } catch (ElasticsearchStatusException e) {
-            if(e.status() == RestStatus.NOT_FOUND) {
+            if (e.status() == RestStatus.NOT_FOUND) {
                 return false;
             } else {
                 throw e;
@@ -194,12 +218,26 @@ public abstract class AbstractESTest {
             client.indices().getIndexTemplate(getIndexTemplatesRequest, RequestOptions.DEFAULT);
             return true;
         } catch (ElasticsearchStatusException e) {
-            if(e.status() == RestStatus.NOT_FOUND) {
+            if (e.status() == RestStatus.NOT_FOUND) {
                 return false;
             } else {
                 throw e;
             }
         }
+    }
+
+    @SneakyThrows
+    protected boolean checkAliasExists(String name) {
+        final GetAliasesRequest getAliasesRequest = new GetAliasesRequest(name);
+        final GetAliasesResponse getAliasesResponse = client.indices().getAlias(getAliasesRequest, RequestOptions.DEFAULT);
+        return !getAliasesResponse.getAliases().isEmpty();
+    }
+
+    @SneakyThrows
+    protected boolean checkPipelineExists(String name) {
+        final GetPipelineRequest getPipelineRequest = new GetPipelineRequest(name);
+        final GetPipelineResponse getPipelineResponse = client.ingest().getPipeline(getPipelineRequest, RequestOptions.DEFAULT);
+        return !getPipelineResponse.pipelines().isEmpty();
     }
 
     @SneakyThrows

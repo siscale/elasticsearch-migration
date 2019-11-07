@@ -1,0 +1,11 @@
+{
+    "description" : "rename xxx",
+    "processors" : [
+        {
+            "rename": {
+                "field": "xxx",
+                "target_field": "yyy"
+            }
+        }
+    ]
+}

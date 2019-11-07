@@ -1,0 +1,8 @@
+{
+    "source": {
+        "index": "test_index_1"
+    },
+    "dest": {
+        "index": "test_index_2"
+    }
+}

@@ -238,6 +238,110 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     }
 
     @Test
+    public void testApplyAliasesMigration() throws ExecutionException, InterruptedException, IOException {
+
+        createIndex("test_index", loadResource("create_index.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new AliasesMigration(loadResource("create_alias.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        final DefaultMigrationClient defaultMigrationClient = createClient();
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+
+        assertThat(checkAliasExists("test_alias"), is(true));
+        assertMigrationEntry();
+    }
+
+    @Test
+    public void testCreatePipelineMigration() throws ExecutionException, InterruptedException, IOException {
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new CreateIngestPipelineMigration("test_pipeline", loadResource("create_pipeline.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        final DefaultMigrationClient defaultMigrationClient = createClient();
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+
+        assertThat(checkPipelineExists("test_pipeline"), is(true));
+        assertMigrationEntry();
+    }
+
+    @Test
+    public void testDeletePipelineMigration() throws ExecutionException, InterruptedException, IOException {
+
+        createPipeline("test_pipeline", loadResource("create_pipeline.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new DeleteIngestPipelineMigration("test_pipeline")),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        final DefaultMigrationClient defaultMigrationClient = createClient();
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+
+        assertThat(checkPipelineExists("test_pipeline"), is(false));
+        assertMigrationEntry();
+    }
+
+    @Test
+    public void testReindexMigration() throws ExecutionException, InterruptedException, IOException {
+
+        createIndex("test_index_1", loadResource("create_index.json"));
+        createIndex("test_index_2", loadResource("create_index.json"));
+        indexDocument("test_index_1", "1", loadResource("index_document.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new ReindexMigration(loadResource("reindex.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        final DefaultMigrationClient defaultMigrationClient = createClient();
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+
+        assertThat(checkDocumentExists("test_index_1", "1"), is(true));
+        assertMigrationEntry();
+    }
+
+    @Test
     public void testReapplyMigration() throws ExecutionException, InterruptedException, IOException {
 
         final DefaultMigrationClient defaultMigrationClient = createClient();
