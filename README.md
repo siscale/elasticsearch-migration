@@ -111,6 +111,10 @@ Currently the following migration types are supported:
  * INDEX_DOCUMENT
  * UPDATE_DOCUMENT
  * DELETE_DOCUMENT
+ * CREATE_INGEST_PIPELINE
+ * ALIASES
+ * REINDEX
+ * DELETE_INGEST_PIPELINE
 
 ### Example changeset
 ```yaml
