@@ -59,6 +59,7 @@
         <maven.surefire.report.plugin.version>2.14</maven.surefire.report.plugin.version>
         <maven.source.plugin.version>2.1.2</maven.source.plugin.version>
         <maven.javadoc.plugin.version>2.9</maven.javadoc.plugin.version>
+        <maven.versions-maven-plugin>2.7</maven.versions-maven-plugin>
     </properties>
 
     <dependencies>
@@ -351,6 +352,16 @@
                     <mavenExecutorId>forked-path</mavenExecutorId>
                     <useReleaseProfile>false</useReleaseProfile>
                     <arguments>${arguments} -Psonatype-oss-release -Psign</arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${maven.versions-maven-plugin}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>org.apache.commons:commons-collections4</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
