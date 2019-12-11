@@ -7,17 +7,16 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 ## Requirements
 * Java (Tested with JDK 8+)
 
-| Elasticsearch version | Tested with | Library version   | groupId 
-| --------------------- |------------ | ----------------- | --------------
-| 6.x.x                 | 6.2.4       | 1.0.0 - 1.0.5     | com.hubrick.lib
-| 7.x.x                 | 7.4.0       | 1.1.0 - 1.2.0     | com.github.eemmiirr.lib
+| Elasticsearch version | Tested with | Library version   
+| --------------------- |------------ | ----------------- 
+| 7.x.x                 | 7.4.0       | 1.0.0    
 
 Latest version
 ```
 <dependency>
-    <groupId>com.github.eemmiirr.lib</groupId>
+    <groupId>com.quandoo.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.2.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 

@@ -5,14 +5,14 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    <groupId>com.github.eemmiirr.lib</groupId>
+    <groupId>com.quandoo.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <inceptionYear>2019</inceptionYear>
 
     <name>Elasticsearch schema migration library</name>
-    <url>https://github.com/eemmiirr/elasticsearch-migration</url>
+    <url>https://github.com/quandoo/elasticsearch-migration</url>
     <description>A flyway inspired Elasticsearch schema migration library</description>
 
     <licenses>
@@ -26,7 +26,7 @@
         <developer>
             <id>1</id>
             <name>Emir Dizdarevic</name>
-            <email>4640075+eemmiirr@users.noreply.github.com</email>
+            <email>account.oss@quandoo.com</email>
         </developer>
     </developers>
 
@@ -329,8 +329,8 @@
                 <configuration>
                     <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
                     <properties>
-                        <owner>Emir Dizdarevic</owner>
-                        <email>4640075+eemmiirr@users.noreply.github.com</email>
+                        <owner>Quandoo GmbH</owner>
+                        <email>account.oss@quandoo.com</email>
                     </properties>
                     <includes>
                         <include>**/*.java</include>
@@ -448,8 +448,8 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/eemmiirr/elasticsearch-migration.git</connection>
-        <developerConnection>scm:git:git@github.com:eemmiirr/elasticsearch-migration.git</developerConnection>
-        <url>http://github.com/eemmiirr/elasticsearch-migration.git</url>
+        <connection>scm:git:git://github.com/quandoo/elasticsearch-migration.git</connection>
+        <developerConnection>scm:git:git@github.com:quandoo/elasticsearch-migration.git</developerConnection>
+        <url>http://github.com/quandoo/elasticsearch-migration.git</url>
     </scm>
 </project>
