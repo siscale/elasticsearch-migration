@@ -70,7 +70,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
 
-    private static final Pattern MIGRATION_FILE_PATTERN = Pattern.compile("^V([0-9]{1}(?:_{1}[0-9]+)*)__([a-zA-Z0-9]{1}[a-zA-Z0-9_-]*)\\.yaml$");
+    private static final Pattern MIGRATION_FILE_PATTERN = Pattern.compile("^V([0-9]{1,3}(?:_{1}[0-9]+)*)__([a-zA-Z0-9]{1}[a-zA-Z0-9_-]*)\\.yaml$");
 
     private final Parser yamlParser;
 
