@@ -16,7 +16,7 @@ Latest version
 <dependency>
     <groupId>com.quandoo.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -103,6 +103,7 @@ The yaml files have to conform to this schema [YAML Schema](src/main/resources/s
 
 Currently the following migration types are supported: 
  * CREATE_INDEX
+ * UPDATE_INDEX_SETTINGS
  * DELETE_INDEX
  * CREATE_OR_UPDATE_INDEX_TEMPLATE
  * DELETE_INDEX_TEMPLATE
@@ -144,6 +145,14 @@ migrations:
                       "index": true
                   }
               }
+          }
+      }
+  - type: UPDATE_INDEX_SETTINGS
+    index: 'test_index'
+    definition: >
+      {
+          "index" : {
+              "number_of_replicas" : 1
           }
       }
   - type: CREATE_OR_UPDATE_INDEX_TEMPLATE

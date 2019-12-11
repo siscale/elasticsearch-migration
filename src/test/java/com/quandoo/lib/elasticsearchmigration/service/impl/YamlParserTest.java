@@ -19,6 +19,7 @@ import com.quandoo.lib.elasticsearchmigration.exception.*;
 import com.quandoo.lib.elasticsearchmigration.model.input.*;
 import java.net.*;
 
+import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateIndexSettingsMigration;
 import org.junit.*;
 
 
@@ -38,6 +39,7 @@ public class YamlParserTest {
 
         assertThat(checksumedMigrationFile.getMigrationFile().getMigrations(), contains(
                 instanceOf(CreateIndexMigrationFileEntry.class),
+                instanceOf(UpdateIndexSettingsMigrationFileEntry.class),
                 instanceOf(CreateOrUpdateIndexTemplateMigrationFileEntry.class),
                 instanceOf(CreateIngestPipelineMigrationFileEntry.class),
                 instanceOf(UpdateMappingMigrationFileEntry.class),
@@ -52,7 +54,7 @@ public class YamlParserTest {
         ));
 
         assertThat(checksumedMigrationFile.getSha256Checksum(), is(
-                "8a2f6654cb772e142e0d7f5d03b15449cdfffd6428567be1c2018fbbf8faf58b"
+                "7647553f6c5cfa37934c6f8ec06f0fe778921311b2318d53de449ad1627cc9f6"
         ));
     }
 

@@ -28,6 +28,7 @@ import com.quandoo.lib.elasticsearchmigration.model.input.DeleteIngestPipelineMi
 import com.quandoo.lib.elasticsearchmigration.model.input.IndexDocumentMigrationFileEntry;
 import com.quandoo.lib.elasticsearchmigration.model.input.ReindexMigrationFileEntry;
 import com.quandoo.lib.elasticsearchmigration.model.input.UpdateDocumentMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.UpdateIndexSettingsMigrationFileEntry;
 import com.quandoo.lib.elasticsearchmigration.model.input.UpdateMappingMigrationFileEntry;
 import com.quandoo.lib.elasticsearchmigration.model.migration.AliasesMigration;
 import com.quandoo.lib.elasticsearchmigration.model.migration.CreateIndexMigration;
@@ -45,6 +46,7 @@ import com.quandoo.lib.elasticsearchmigration.model.migration.MigrationSetEntry;
 import com.quandoo.lib.elasticsearchmigration.model.migration.OpType;
 import com.quandoo.lib.elasticsearchmigration.model.migration.ReindexMigration;
 import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateDocumentMigration;
+import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateIndexSettingsMigration;
 import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateMappingMigration;
 import com.quandoo.lib.elasticsearchmigration.service.MigrationSetProvider;
 import com.quandoo.lib.elasticsearchmigration.service.Parser;
@@ -165,6 +167,12 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
                 final ReindexMigrationFileEntry reindexMigrationFileEntry = (ReindexMigrationFileEntry) baseMigrationFileEntry;
                 return new ReindexMigration(
                         reindexMigrationFileEntry.getDefinition()
+                );
+            case UPDATE_INDEX_SETTINGS:
+                final UpdateIndexSettingsMigrationFileEntry updateIndexSettingsMigrationFileEntry = (UpdateIndexSettingsMigrationFileEntry) baseMigrationFileEntry;
+                return new UpdateIndexSettingsMigration(
+                        updateIndexSettingsMigrationFileEntry.getIndex(),
+                        updateIndexSettingsMigrationFileEntry.getDefinition()
                 );
             default:
                 throw new IllegalStateException("Unknown migration type " + baseMigrationFileEntry.getType());

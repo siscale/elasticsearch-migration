@@ -183,6 +183,31 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         assertMigrationEntry();
     }
 
+    @Test
+    public void testApplyUpdateIndexSettingsMigration() throws ExecutionException, InterruptedException, IOException {
+
+        createIndex("test_index", loadResource("create_index.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new UpdateIndexSettingsMigration("test_index", loadResource("update_index_settings.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        final DefaultMigrationClient defaultMigrationClient = createClient();
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+
+        assertThat(checkIndexExists("test_index"), is(true));
+        assertMigrationEntry();
+    }
 
     @Test
     public void testApplyIndexDocumentMigration() throws ExecutionException, InterruptedException, IOException {

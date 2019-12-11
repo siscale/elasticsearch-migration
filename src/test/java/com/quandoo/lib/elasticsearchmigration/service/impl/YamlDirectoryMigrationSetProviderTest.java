@@ -56,7 +56,7 @@ public class YamlDirectoryMigrationSetProviderTest {
         ));
         assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getSha256Checksum()).collect(Collectors.toList()), contains(
                 "de6e1367a5bad35d63931ea9fc9ef2e4f53b0a6e2d3e4b5ecbea5e918d3e3917",
-                "248be5cb24eeeab60cefb725a883433a12aa35f4d0f922a95b9dcea34e19a5eb",
+                "c02446548fa38297c926ddaf755774fcb595b1cb765f4c21f96b2131d28831a0",
                 "b87fd41e28149029486b0a5c78d92bdc749469e0531dd6be954196ae664841e4"
         ));
         assertThat(migrationSet.getMigrations().stream().flatMap(e -> e.getMigration().stream()).collect(Collectors.toList()), contains(
@@ -64,6 +64,7 @@ public class YamlDirectoryMigrationSetProviderTest {
                 new CreateIndexMigration("test_index_2", "{}"),
                 new CreateOrUpdateIndexTemplateMigration("test_template", "{}"),
                 new CreateIngestPipelineMigration("test_pipeline", "{}"),
+                new UpdateIndexSettingsMigration("test_index_1", "{}"),
                 new UpdateMappingMigration(ImmutableSet.of("test_index_1", "test_index_2"), "{}"),
                 new AliasesMigration("{}"),
                 new ReindexMigration("{}"),

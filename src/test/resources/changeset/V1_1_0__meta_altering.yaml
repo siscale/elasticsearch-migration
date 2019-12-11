@@ -30,3 +30,11 @@ migrations:
             }
           ]
         }
+  - type: UPDATE_INDEX_SETTINGS
+    index: 'test_index_1'
+    definition: >
+      {
+          "index" : {
+              "number_of_replicas" : 1
+          }
+      }

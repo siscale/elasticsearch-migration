@@ -66,7 +66,7 @@ public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry110.getFailureMessage(), is(""));
         assertThat(migrationEntry110.getState(), is(State.SUCCESS));
         assertThat(migrationEntry110.getSha256Checksum(), is(
-                "d2a5aa74d14d3f24e1520e584792c10f8afbe3e8aebad1b81b2e07b3944b0eb8"
+                "190fd2ee57f2ad2121e719ded8a8e23682ff4e48d5fdf9bf1de7971ae86f4c40"
         ));
 
         assertThat(migrationEntry111.getIdentifier(), is("test"));

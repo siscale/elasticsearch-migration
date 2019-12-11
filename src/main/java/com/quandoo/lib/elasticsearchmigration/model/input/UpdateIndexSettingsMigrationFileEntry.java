@@ -15,22 +15,25 @@
  */
 package com.quandoo.lib.elasticsearchmigration.model.input;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 /**
  * @author Emir Dizdarevic
  * @since 1.0.0
  */
-public enum MigrationType {
-    CREATE_INDEX,
-    DELETE_INDEX,
-    CREATE_OR_UPDATE_INDEX_TEMPLATE,
-    DELETE_INDEX_TEMPLATE,
-    UPDATE_MAPPING,
-    INDEX_DOCUMENT,
-    DELETE_DOCUMENT,
-    UPDATE_DOCUMENT,
-    ALIASES,
-    CREATE_INGEST_PIPELINE,
-    DELETE_INGEST_PIPELINE,
-    REINDEX,
-    UPDATE_INDEX_SETTINGS
+@Getter
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UpdateIndexSettingsMigrationFileEntry extends BaseMigrationFileEntry {
+
+    @NonNull
+    private String index;
+    @NonNull
+    private String definition;
 }

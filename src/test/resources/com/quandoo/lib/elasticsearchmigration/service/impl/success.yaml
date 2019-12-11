@@ -27,6 +27,14 @@ migrations:
               }
           }
       }
+  - type: UPDATE_INDEX_SETTINGS
+    index: 'test_index'
+    definition: >
+        {
+            "index" : {
+                "number_of_replicas" : 1
+            }
+        }
   - type: CREATE_OR_UPDATE_INDEX_TEMPLATE
     template: 'test_template'
     definition: >

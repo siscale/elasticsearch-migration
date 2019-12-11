@@ -1,4 +1,7 @@
 migrations:
+  - type: UPDATE_INDEX_SETTINGS
+    index: 'test_index_1'
+    definition: '{}'
   - type: UPDATE_MAPPING
     indices:
       - 'test_index_1'
