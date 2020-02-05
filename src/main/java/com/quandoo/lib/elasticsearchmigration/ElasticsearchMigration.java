@@ -15,6 +15,7 @@
  */
 package com.quandoo.lib.elasticsearchmigration;
 
+import com.google.common.base.Strings;
 import com.quandoo.lib.elasticsearchmigration.model.migration.MigrationSet;
 import com.quandoo.lib.elasticsearchmigration.service.MigrationClient;
 import com.quandoo.lib.elasticsearchmigration.service.MigrationSetProvider;
@@ -24,6 +25,11 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -55,10 +61,21 @@ public class ElasticsearchMigration {
     }
 
     private RestHighLevelClient createElasticsearchClient(ElasticsearchConfig elasticsearchConfig) {
+
+
         final RestClientBuilder builder = RestClient.builder(
-                elasticsearchConfig.getUrls().stream().map(e -> new HttpHost(e.getHost(), e.getPort(), e.getProtocol())).collect(Collectors.toSet()).toArray(new HttpHost[0])
+                elasticsearchConfig.getUrls().stream().map(e -> new HttpHost(e.getHost(), e.getPort(), e.getProtocol())).distinct().toArray(HttpHost[]::new)
         );
-        builder.setDefaultHeaders(elasticsearchConfig.getHeaders().entries().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new Header[0]));
+
+        if (!Strings.isNullOrEmpty(elasticsearchConfig.getUsername())) {
+            final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(elasticsearchConfig.getUsername(), elasticsearchConfig.getPassword()));
+            builder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
+                    .disableAuthCaching()
+                    .setDefaultCredentialsProvider(credentialsProvider));
+        }
+
+        builder.setDefaultHeaders(elasticsearchConfig.getHeaders().entries().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).toArray(Header[]::new));
 
         if (elasticsearchConfig.getPathPrefix() != null) {
             builder.setPathPrefix(elasticsearchConfig.getPathPrefix());

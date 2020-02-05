@@ -9,14 +9,14 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 
 | Elasticsearch version | Tested with | Library version   
 | --------------------- |------------ | ----------------- 
-| 7.x.x                 | 7.4.0       | 1.0.0    
+| 7.x.x                 | 7.4.0       | 1.0.0  - 1.2.0  
 
 Latest version
 ```
 <dependency>
     <groupId>com.quandoo.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -262,12 +262,17 @@ Each service has to define an identitifier which will identify the owner of the 
 The easiest way is to give the identifier the service name which ownes it.
 
 Example:
-```
+```java
 final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration(
   ElasticsearchMigrationConfig.builder( 
     "test-service", 
-    ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()
-  ).basePackage("migration.es").build()
+    ElasticsearchConfig.builder(new URL("http://localhost:9200"))
+        .username("user")
+        .password("password")
+        .build()
+  )
+    .basePackage("migration.es")
+    .build()
 );
 
 elasticsearchMigration.migrate();

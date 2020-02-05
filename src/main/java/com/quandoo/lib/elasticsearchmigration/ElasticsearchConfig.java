@@ -36,6 +36,8 @@ public class ElasticsearchConfig {
     @NonNull
     private final Set<URL> urls;
     private final String pathPrefix;
+    private final String username;
+    private final String password;
 
     @NonNull
     @Builder.Default
