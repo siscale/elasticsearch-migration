@@ -46,7 +46,11 @@ import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.*;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
+import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.client.indices.GetIndexTemplatesRequest;
+import org.elasticsearch.client.indices.PutIndexTemplateRequest;
 import org.elasticsearch.common.bytes.BytesArray;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
@@ -55,8 +59,8 @@ import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -75,8 +79,8 @@ public abstract class AbstractESTest {
 
     private static final ObjectMapper esObjectMapper = new ObjectMapper();
 
-    @BeforeClass
-    public static final void initESClass() {
+    @BeforeAll
+    public static void initESClass() {
         esObjectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         esObjectMapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
         esObjectMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
@@ -90,7 +94,7 @@ public abstract class AbstractESTest {
         esObjectMapper.registerModule(new JavaTimeModule());
     }
 
-    @Before
+    @BeforeEach
     public final void initES() throws InterruptedException, IOException {
         client = new RestHighLevelClient(RestClient.builder(HttpHost.create("http://localhost:9200")));
         refreshIndices();

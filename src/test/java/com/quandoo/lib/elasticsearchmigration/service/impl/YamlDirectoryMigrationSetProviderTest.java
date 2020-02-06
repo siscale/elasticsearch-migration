@@ -17,14 +17,16 @@ package com.quandoo.lib.elasticsearchmigration.service.impl;
 
 import com.quandoo.lib.elasticsearchmigration.model.migration.*;
 import com.google.common.collect.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.net.*;
 import java.util.*;
 import java.util.stream.*;
-import org.junit.*;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
 /**
  * @author Emir Dizdarevic
@@ -34,7 +36,7 @@ public class YamlDirectoryMigrationSetProviderTest {
 
     private YamlDirectoryMigrationSetProvider yamlDirectoryMigrationSetProvider;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         yamlDirectoryMigrationSetProvider = new YamlDirectoryMigrationSetProvider();
     }

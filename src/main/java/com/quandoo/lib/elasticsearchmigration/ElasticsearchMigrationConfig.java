@@ -34,7 +34,7 @@ public class ElasticsearchMigrationConfig {
     private final String basePackage = "es.migration";
     @NonNull
     @Builder.Default
-    private final Boolean ignorePreviousFailures = true;
+    private final Boolean ignorePreviousFailures = false;
     @NonNull
     @Builder.Default
     private final Integer backoffPeriodInMillis = 30000;

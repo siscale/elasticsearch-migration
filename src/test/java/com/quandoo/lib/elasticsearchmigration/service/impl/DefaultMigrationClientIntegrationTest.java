@@ -25,11 +25,13 @@ import java.util.*;
 import java.util.concurrent.*;
 import org.apache.http.*;
 import org.elasticsearch.client.*;
-import org.junit.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Emir Dizdarevic
@@ -419,7 +421,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         defaultMigrationClient.applyMigrationSet(migrationSet);
     }
 
-    @Test(expected = PreviousMigrationFailedException.class)
+    @Test
     public void testPreviousMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient(false, 15000, 5);
@@ -441,10 +443,13 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(PreviousMigrationFailedException.class, () -> {
+                defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
+
     }
 
-    @Test(expected = MigrationFailedException.class)
+    @Test
     public void testVersionMismatchMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient();
@@ -475,7 +480,9 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(MigrationFailedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
     }
 
     @Test
@@ -507,7 +514,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         assertMigrationEntry();
     }
 
-    @Test(expected = MigrationLockedException.class)
+    @Test
     public void testMigrationFailedAfterAllRetries() throws ExecutionException, InterruptedException, IOException {
 
         final DefaultMigrationClient defaultMigrationClient = createClient(true, 5000, 3);
@@ -529,12 +536,14 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(MigrationLockedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
 
         assertThat(checkIndexExists("test_index"), is(false));
     }
 
-    @Test(expected = MigrationFailedException.class)
+    @Test
     public void testNameMismatchMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient();
@@ -556,10 +565,12 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(MigrationFailedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
     }
 
-    @Test(expected = MigrationFailedException.class)
+    @Test
     public void testChecksumMismatchMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient();
@@ -581,10 +592,12 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(MigrationFailedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
     }
 
-    @Test(expected = MigrationFailedException.class)
+    @Test
     public void testLocalChangeSetSmallerMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient();
@@ -607,10 +620,12 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(MigrationFailedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
     }
 
-    @Test(expected = MigrationFailedException.class)
+    @Test
     public void testSmallerChangeSetThenAlreadyAppliedMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient();
@@ -633,7 +648,9 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        defaultMigrationClient.applyMigrationSet(migrationSet);
+        assertThrows(MigrationFailedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
     }
 
     private void assertMigrationEntry() {

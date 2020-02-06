@@ -15,16 +15,30 @@
  */
 package com.quandoo.lib.elasticsearchmigration.service.impl;
 
-import com.quandoo.lib.elasticsearchmigration.exception.*;
-import com.quandoo.lib.elasticsearchmigration.model.input.*;
-import java.net.*;
+import com.quandoo.lib.elasticsearchmigration.exception.InvalidSchemaException;
+import com.quandoo.lib.elasticsearchmigration.model.input.AliasesMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.ChecksumedMigrationFile;
+import com.quandoo.lib.elasticsearchmigration.model.input.CreateIndexMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.CreateIngestPipelineMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.CreateOrUpdateIndexTemplateMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.DeleteDocumentMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.DeleteIndexMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.DeleteIndexTemplateMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.DeleteIngestPipelineMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.IndexDocumentMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.ReindexMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.UpdateDocumentMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.UpdateIndexSettingsMigrationFileEntry;
+import com.quandoo.lib.elasticsearchmigration.model.input.UpdateMappingMigrationFileEntry;
+import org.junit.jupiter.api.Test;
 
-import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateIndexSettingsMigration;
-import org.junit.*;
+import java.net.URISyntaxException;
 
-
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Emir Dizdarevic
@@ -58,9 +72,11 @@ public class YamlParserTest {
         ));
     }
 
-    @Test(expected = InvalidSchemaException.class)
+    @Test
     public void parseFailure() throws URISyntaxException {
-        final YamlParser yamlParser = new YamlParser();
-        yamlParser.parse("failure.yaml");
+        assertThrows(InvalidSchemaException.class, () -> {
+            final YamlParser yamlParser = new YamlParser();
+            yamlParser.parse("failure.yaml");
+        });
     }
 }

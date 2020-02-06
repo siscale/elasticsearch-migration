@@ -18,16 +18,16 @@ package com.quandoo.lib.elasticsearchmigration;
 import com.quandoo.lib.elasticsearchmigration.model.es.MigrationEntry;
 import com.quandoo.lib.elasticsearchmigration.model.es.MigrationEntryMeta;
 import com.quandoo.lib.elasticsearchmigration.model.es.State;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * @author Emir Dizdarevic
