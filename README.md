@@ -9,14 +9,14 @@ Elasticsearch Migration works just like Flyway but using yaml files for describi
 
 | Elasticsearch version | Tested with | Library version   
 | --------------------- |------------ | ----------------- 
-| 7.x.x                 | 7.4.0       | 1.0.0  - 1.2.1 
+| 7.x.x                 | 7.4.0       | 1.0.0  - 1.2.2 
 
 Latest version
 ```
 <dependency>
     <groupId>com.quandoo.lib</groupId>
     <artifactId>elasticsearch-migration</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 

@@ -71,7 +71,6 @@ public class ElasticsearchMigration {
             final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
             credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(elasticsearchConfig.getUsername(), elasticsearchConfig.getPassword()));
             builder.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder
-                    .disableAuthCaching()
                     .setDefaultCredentialsProvider(credentialsProvider));
         }
 
