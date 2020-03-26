@@ -48,8 +48,8 @@ public class YamlDirectoryMigrationSetProviderTest {
         assertThat(migrationSet.getMigrations(), hasSize(3));
         assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getVersion()).collect(Collectors.toList()), contains(
                 "1.0.0",
-                "1.1.0",
-                "1.1.1"
+                "1.2.0",
+                "1.10.0"
         ));
         assertThat(migrationSet.getMigrations().stream().map(e -> e.getMigrationMeta().getName()).collect(Collectors.toList()), contains(
                 "migration_one",

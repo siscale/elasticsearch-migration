@@ -50,11 +50,11 @@ import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateIndexSetting
 import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateMappingMigration;
 import com.quandoo.lib.elasticsearchmigration.service.MigrationSetProvider;
 import com.quandoo.lib.elasticsearchmigration.service.Parser;
+import com.quandoo.lib.elasticsearchmigration.util.VersionComparator;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -70,7 +70,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
 
-    private static final Pattern MIGRATION_FILE_PATTERN = Pattern.compile("^V([0-9]{1,3}(?:_{1}[0-9]+)*)__([a-zA-Z0-9]{1}[a-zA-Z0-9_-]*)\\.yaml$");
+    private static final Pattern MIGRATION_FILE_PATH_PATTERN = Pattern.compile("^.*V([0-9]{1,3}(?:_[0-9]+)*)__([a-zA-Z0-9][a-zA-Z0-9_-]*)\\.yaml$");
 
     private final Parser yamlParser;
 
@@ -82,14 +82,14 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
     public MigrationSet getMigrationSet(final String basePackage) {
         checkNotNull(basePackage, "basePackage must not be null");
 
-        final Set<String> resources = new Reflections(basePackage, new ResourcesScanner()).getResources(MIGRATION_FILE_PATTERN);
+        final Set<String> resources = new Reflections(basePackage, new ResourcesScanner()).getResources(MIGRATION_FILE_PATH_PATTERN);
         final List<String> sortedResources = new ArrayList<>(resources);
-        sortedResources.sort(String::compareTo);
+        sortedResources.sort(new VersionComparator(MIGRATION_FILE_PATH_PATTERN, 1, "_", e -> e));
 
         final List<MigrationSetEntry> migrationSetEntries = new LinkedList<>();
         for (String resource : sortedResources) {
             final String resourceName = resource.lastIndexOf("/") != -1 ? resource.substring(resource.lastIndexOf("/") + 1) : resource;
-            final Matcher matcher = MIGRATION_FILE_PATTERN.matcher(resourceName);
+            final Matcher matcher = MIGRATION_FILE_PATH_PATTERN.matcher(resourceName);
             matcher.matches();
 
             final ChecksumedMigrationFile checksumedMigrationFile = yamlParser.parse(resource);
@@ -105,7 +105,6 @@ public class YamlDirectoryMigrationSetProvider implements MigrationSetProvider {
             );
         }
 
-        migrationSetEntries.sort(Comparator.comparing(o -> o.getMigrationMeta().getVersion()));
         return new MigrationSet(migrationSetEntries);
     }
 

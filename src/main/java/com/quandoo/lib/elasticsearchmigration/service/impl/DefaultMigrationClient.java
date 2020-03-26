@@ -45,6 +45,7 @@ import com.quandoo.lib.elasticsearchmigration.model.migration.OpType;
 import com.quandoo.lib.elasticsearchmigration.model.migration.UpdateDocumentMigration;
 import com.quandoo.lib.elasticsearchmigration.service.MigrationClient;
 import com.jayway.jsonpath.JsonPath;
+import com.quandoo.lib.elasticsearchmigration.util.VersionComparator;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -69,13 +70,13 @@ import org.elasticsearch.search.sort.SortOrder;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -158,7 +159,7 @@ public class DefaultMigrationClient implements MigrationClient {
                 refreshIndices(MigrationEntryMeta.INDEX);
 
                 final List<MigrationSetEntry> orderedMigrationSetEntries = Lists.newArrayList(migrationSet.getMigrations());
-                orderedMigrationSetEntries.sort(Comparator.comparing(o -> o.getMigrationMeta().getVersion()));
+                orderedMigrationSetEntries.sort(new VersionComparator<>(Pattern.compile("^((?:\\d+\\.)*\\d)$"), 1, ".", e -> e.getMigrationMeta().getVersion()));
 
                 final List<MigrationEntry> allMigrations = getAllMigrations();
                 log.info("Running checks...");
