@@ -65,7 +65,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -314,11 +313,13 @@ public class DefaultMigrationClient implements MigrationClient {
             final SearchRequest searchRequest = new SearchRequest()
                     .indices(MigrationEntryMeta.INDEX)
                     .searchType(SearchType.DEFAULT)
-                    .source(SearchSourceBuilder.searchSource().query(queryBuilder).fetchSource(true).size(1000).sort(MigrationEntryMeta.VERSION_FIELD, SortOrder.ASC));
+                    .source(SearchSourceBuilder.searchSource().query(queryBuilder).fetchSource(true).size(1000));
 
             final SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             if (searchResponse.status() == RestStatus.OK) {
-                return transformHitsFromEs(searchResponse.getHits(), MigrationEntry.class);
+                final List<MigrationEntry> migrationEntries = transformHitsFromEs(searchResponse.getHits(), MigrationEntry.class);
+                migrationEntries.sort(new VersionComparator<>(Pattern.compile("^((?:\\d+\\.)*\\d)$"), 1, ".", e -> e.getVersion()));
+                return migrationEntries;
             } else {
                 throw new MigrationFailedException("Could not access '" + MigrationEntryMeta.INDEX + "' index. Failures: " + Arrays.asList(searchResponse.getShardFailures()));
             }
