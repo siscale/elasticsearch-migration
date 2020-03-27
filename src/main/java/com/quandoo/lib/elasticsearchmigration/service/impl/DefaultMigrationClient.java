@@ -86,6 +86,7 @@ import java.util.stream.Collectors;
 public class DefaultMigrationClient implements MigrationClient {
 
     private static final String WAIT_FOR_ACTIVE_SHARDS_FIELD = "wait_for_active_shards";
+    private static final Pattern VERSION_REGEX_PATTERN = Pattern.compile("^((?:\\d+\\.)*\\d)$");
 
     static final String ELASTICSEARCH_MIGRATION_LOCK_INDEX;
     static final String ELASTICSEARCH_MIGRATION_VERSION_INDEX;
@@ -158,7 +159,7 @@ public class DefaultMigrationClient implements MigrationClient {
                 refreshIndices(MigrationEntryMeta.INDEX);
 
                 final List<MigrationSetEntry> orderedMigrationSetEntries = Lists.newArrayList(migrationSet.getMigrations());
-                orderedMigrationSetEntries.sort(new VersionComparator<>(Pattern.compile("^((?:\\d+\\.)*\\d)$"), 1, ".", e -> e.getMigrationMeta().getVersion()));
+                orderedMigrationSetEntries.sort(new VersionComparator<>(VERSION_REGEX_PATTERN, 1, ".", e -> e.getMigrationMeta().getVersion()));
 
                 final List<MigrationEntry> allMigrations = getAllMigrations();
                 log.info("Running checks...");
@@ -283,8 +284,8 @@ public class DefaultMigrationClient implements MigrationClient {
         // Should never happen since the changeset is ordered by version but better safe then sorry
         final Optional<MigrationEntry> lastMigrationEntry = Optional.ofNullable(Iterables.getLast(migrationEntries, null));
         for (int i = migrationEntries.size(); i < migrationMetas.size(); i++) {
-            if (lastMigrationEntry.isPresent() && lastMigrationEntry.get().getVersion().compareTo(migrationMetas.get(i).getVersion()) >= 0) {
-                throw new MigrationFailedException("Migration Set contains version lower or equal to the latest applied version. New version: " + migrationMetas.get(i).getVersion() + ", Latest applied version: " + lastMigrationEntry.get().getVersion());
+            if (lastMigrationEntry.isPresent() && new VersionComparator<String>(VERSION_REGEX_PATTERN, 1, ".", e -> e).compare(lastMigrationEntry.get().getVersion(), migrationMetas.get(i).getVersion()) >= 0) {
+                throw new MigrationFailedException("Migration Set contains version lower then the latest applied version. New version: " + migrationMetas.get(i).getVersion() + ", Latest applied version: " + lastMigrationEntry.get().getVersion());
             }
         }
     }
@@ -318,7 +319,7 @@ public class DefaultMigrationClient implements MigrationClient {
             final SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
             if (searchResponse.status() == RestStatus.OK) {
                 final List<MigrationEntry> migrationEntries = transformHitsFromEs(searchResponse.getHits(), MigrationEntry.class);
-                migrationEntries.sort(new VersionComparator<>(Pattern.compile("^((?:\\d+\\.)*\\d)$"), 1, ".", e -> e.getVersion()));
+                migrationEntries.sort(new VersionComparator<>(VERSION_REGEX_PATTERN, 1, ".", e -> e.getVersion()));
                 return migrationEntries;
             } else {
                 throw new MigrationFailedException("Could not access '" + MigrationEntryMeta.INDEX + "' index. Failures: " + Arrays.asList(searchResponse.getShardFailures()));
