@@ -60,6 +60,64 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     }
 
     @Test
+    public void testPreviousMigrationsProperlyOrdered() throws ExecutionException, InterruptedException, IOException {
+
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.10.0", loadResource("es_migration_entry_3.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.2.0", loadResource("es_migration_entry_2.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.1.0", loadResource("es_migration_entry_1.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.1.0",
+                                        "1"
+                                )
+
+                        ),
+                        new MigrationSetEntry(
+                                ImmutableList.of(new AliasesMigration(loadResource("create_alias.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.2.0",
+                                        "2"
+                                )
+
+                        ),
+                        new MigrationSetEntry(
+                                ImmutableList.of(new CreateOrUpdateIndexTemplateMigration("test_template", loadResource("create_template.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.10.0",
+                                        "3"
+                                )
+
+                        ),
+                        new MigrationSetEntry(
+                                ImmutableList.of(new CreateIngestPipelineMigration("test_pipeline", loadResource("create_pipeline.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.11.0",
+                                        "4"
+                                )
+
+                        )
+                )
+        );
+
+        final DefaultMigrationClient defaultMigrationClient = createClient();
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+
+        assertThat(checkIndexExists("test_index"), is(false));
+        assertThat(checkAliasExists("test_alias"), is(false));
+        assertThat(checkTemplateExists("test_template"), is(false));
+
+        assertThat(checkPipelineExists("test_pipeline"), is(true));
+    }
+
+    @Test
     public void testApplyCreateIndexMigration() throws ExecutionException, InterruptedException, IOException {
 
         final MigrationSet migrationSet = new MigrationSet(

@@ -272,9 +272,9 @@ public class DefaultMigrationClient implements MigrationClient {
 
         for (int i = 0; i < migrationEntries.size(); i++) {
             if (!migrationEntries.get(i).getVersion().equals(migrationMetas.get(i).getVersion())) {
-                throw new MigrationFailedException("Version mismatch for " + migrationEntries.get(i).getName() + ". Local version: " + migrationMetas.get(i).getVersion() + ", ES version: " + migrationEntries.get(i).getVersion());
+                throw new MigrationFailedException("Version mismatch for " + migrationMetas.get(i).getName() + ". Local version: " + migrationMetas.get(i).getVersion() + ", ES version: " + migrationEntries.get(i).getVersion());
             } else if (!migrationEntries.get(i).getSha256Checksum().equals(migrationMetas.get(i).getSha256Checksum())) {
-                throw new MigrationFailedException("Checksum mismatch for " + migrationEntries.get(i).getName() + ". Local checksum: " + migrationMetas.get(i).getVersion() + ":" + migrationMetas.get(i).getSha256Checksum() + ", ES checksum: " + migrationEntries.get(i).getVersion() + ":" + migrationEntries.get(i).getSha256Checksum());
+                throw new MigrationFailedException("Checksum mismatch for " + migrationMetas.get(i).getName() + ". Local checksum: " + migrationMetas.get(i).getVersion() + ":" + migrationMetas.get(i).getSha256Checksum() + ", ES checksum: " + migrationEntries.get(i).getVersion() + ":" + migrationEntries.get(i).getSha256Checksum());
             } else if (!migrationEntries.get(i).getName().equals(migrationMetas.get(i).getName())) {
                 throw new MigrationFailedException("Name mismatch. Local name: " + migrationMetas.get(i).getVersion() + ":" + migrationMetas.get(i).getName() + ", ES name: " + migrationEntries.get(i).getVersion() + ":" + migrationEntries.get(i).getName());
             }

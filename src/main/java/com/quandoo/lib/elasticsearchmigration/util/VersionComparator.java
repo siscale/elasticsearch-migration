@@ -15,6 +15,7 @@
  */
 package com.quandoo.lib.elasticsearchmigration.util;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 
@@ -41,8 +42,8 @@ public class VersionComparator<T> implements Comparator<T> {
             throw new IllegalStateException("Version invalid");
         } else {
             return compareInternal(
-                    Lists.newArrayList(version1Matcher.toMatchResult().group(versionRegexGroup).split(versionDelimiter)),
-                    Lists.newArrayList(version2Matcher.toMatchResult().group(versionRegexGroup).split(versionDelimiter))
+                    Lists.newArrayList(Splitter.on(versionDelimiter).split(version1Matcher.toMatchResult().group(versionRegexGroup))),
+                    Lists.newArrayList(Splitter.on(versionDelimiter).split(version2Matcher.toMatchResult().group(versionRegexGroup)))
             );
         }
 
