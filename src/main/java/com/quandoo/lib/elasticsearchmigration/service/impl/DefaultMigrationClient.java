@@ -103,6 +103,7 @@ public class DefaultMigrationClient implements MigrationClient {
     private final String identifier;
     private final RestHighLevelClient restHighLevelClient;
     private final Boolean ignorePreviousFailures;
+    private final Boolean allowOlderVersions;
     private final Integer backoffPeriodInMillis;
     private final Integer retryCount;
     private final ObjectMapper objectMapper;
@@ -114,11 +115,13 @@ public class DefaultMigrationClient implements MigrationClient {
     public DefaultMigrationClient(@NonNull final String identifier,
                                   @NonNull final RestHighLevelClient restHighLevelClient,
                                   @NonNull final Boolean ignorePreviousFailures,
+                                  @NonNull final Boolean allowOlderVersions,
                                   @NonNull final Integer backoffPeriodInMillis,
                                   @NonNull final Integer retryCount) {
         this.identifier = identifier;
         this.restHighLevelClient = restHighLevelClient;
         this.ignorePreviousFailures = ignorePreviousFailures;
+        this.allowOlderVersions = allowOlderVersions;
         this.backoffPeriodInMillis = backoffPeriodInMillis;
         this.retryCount = retryCount;
         this.objectMapper = createObjectMapper();
@@ -281,11 +284,12 @@ public class DefaultMigrationClient implements MigrationClient {
             }
         }
 
-        // Should never happen since the changeset is ordered by version but better safe then sorry
-        final Optional<MigrationEntry> lastMigrationEntry = Optional.ofNullable(Iterables.getLast(migrationEntries, null));
-        for (int i = migrationEntries.size(); i < migrationMetas.size(); i++) {
-            if (lastMigrationEntry.isPresent() && new VersionComparator<String>(VERSION_REGEX_PATTERN, 1, ".", e -> e).compare(lastMigrationEntry.get().getVersion(), migrationMetas.get(i).getVersion()) >= 0) {
-                throw new MigrationFailedException("Migration Set contains version lower then the latest applied version. New version: " + migrationMetas.get(i).getVersion() + ", Latest applied version: " + lastMigrationEntry.get().getVersion());
+        if(!allowOlderVersions) {
+            final Optional<MigrationEntry> lastMigrationEntry = Optional.ofNullable(Iterables.getLast(migrationEntries, null));
+            for (int i = migrationEntries.size(); i < migrationMetas.size(); i++) {
+                if (lastMigrationEntry.isPresent() && new VersionComparator<String>(VERSION_REGEX_PATTERN, 1, ".", e -> e).compare(lastMigrationEntry.get().getVersion(), migrationMetas.get(i).getVersion()) >= 0) {
+                    throw new MigrationFailedException("Migration Set contains version lower then the latest applied version. New version: " + migrationMetas.get(i).getVersion() + ", Latest applied version: " + lastMigrationEntry.get().getVersion());
+                }
             }
         }
     }

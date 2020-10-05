@@ -44,7 +44,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
 
     @Test
     public void testInitIndexCreation() {
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         assertThat(checkIndexExists(LockEntryMeta.INDEX), is(true));
@@ -52,8 +52,8 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     }
 
     @Test
-    public void testInitIndexCreationNotHappaned() {
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+    public void testInitIndexCreationNotHappened() {
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
 
         assertThat(checkIndexExists(LockEntryMeta.INDEX), is(false));
         assertThat(checkIndexExists(MigrationEntryMeta.INDEX), is(false));
@@ -107,7 +107,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkIndexExists("test_index"), is(false));
@@ -134,7 +134,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkIndexExists("test_index"), is(true));
@@ -160,7 +160,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkIndexExists("test_index"), is(false));
@@ -184,7 +184,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkTemplateExists("test_template"), is(true));
@@ -210,7 +210,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkTemplateExists("test_template"), is(false));
@@ -236,7 +236,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkIndexExists("test_index"), is(true));
@@ -262,7 +262,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkIndexExists("test_index"), is(true));
@@ -288,7 +288,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkDocumentExists("test_index", "1"), is(true));
@@ -315,7 +315,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkDocumentExists("test_index", "1"), is(false));
@@ -341,7 +341,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkAliasExists("test_alias"), is(true));
@@ -365,7 +365,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkPipelineExists("test_pipeline"), is(true));
@@ -391,7 +391,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkPipelineExists("test_pipeline"), is(false));
@@ -419,7 +419,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
                 )
         );
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(migrationSet);
 
         assertThat(checkDocumentExists("test_index_1", "1"), is(true));
@@ -429,7 +429,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testReapplyMigration() throws ExecutionException, InterruptedException, IOException {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
@@ -457,7 +457,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testPreviousMigrationFailedIgnore() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(true, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("failed_elasticsearchmigration_version_entry.json"));
@@ -482,7 +482,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testPreviousMigrationFailedException() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient(false, 15000, 5);
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("failed_elasticsearchmigration_version_entry.json"));
@@ -510,7 +510,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testVersionMismatchMigrationFailedException() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
@@ -546,7 +546,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testMigrationRetried() throws ExecutionException, InterruptedException, IOException {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(LockEntryMeta.INDEX, "test-global", loadResource("lock_entry.json"));
@@ -575,7 +575,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testMigrationFailedAfterAllRetries() throws ExecutionException, InterruptedException, IOException {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient(true, 5000, 3);
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(LockEntryMeta.INDEX, "test-global", loadResource("lock_entry.json"));
@@ -604,7 +604,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testNameMismatchMigrationFailedException() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
@@ -631,7 +631,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testChecksumMismatchMigrationFailedException() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
@@ -658,7 +658,35 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testLocalChangeSetSmallerMigrationFailedException() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
+        defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
+
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        assertThrows(MigrationFailedException.class, () -> {
+            defaultMigrationClient.applyMigrationSet(migrationSet);
+        });
+    }
+
+    @Test
+    public void testLocalChangeSetSmallerMigrationFailedIgnore() {
+
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, true);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
@@ -686,7 +714,7 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     @Test
     public void testSmallerChangeSetThenAlreadyAppliedMigrationFailedException() {
 
-        final DefaultMigrationClient defaultMigrationClient = createClient();
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
@@ -722,12 +750,12 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
         assertThat(migrationEntry.getFailureMessage(), isEmptyString());
     }
 
-    private DefaultMigrationClient createClient() {
-        return createClient(true, 15000, 5);
+    private DefaultMigrationClient createClient(boolean ignorePreviousFailures, boolean allowOlderVersions) {
+        return createClient(ignorePreviousFailures, allowOlderVersions, 15000, 5);
     }
 
-    private DefaultMigrationClient createClient(boolean ignorePreviousFailures, int backoffPeriodMillis, int retryCount) {
+    private DefaultMigrationClient createClient(boolean ignorePreviousFailures, boolean allowOlderVersions, int backoffPeriodMillis, int retryCount) {
         final RestClientBuilder builder = RestClient.builder(new HttpHost("localhost", 9200, "http"));
-        return new DefaultMigrationClient("test", new RestHighLevelClient(builder), ignorePreviousFailures, backoffPeriodMillis, retryCount);
+        return new DefaultMigrationClient("test", new RestHighLevelClient(builder), ignorePreviousFailures, allowOlderVersions, backoffPeriodMillis, retryCount);
     }
 }

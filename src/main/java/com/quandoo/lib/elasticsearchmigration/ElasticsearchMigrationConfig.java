@@ -37,6 +37,9 @@ public class ElasticsearchMigrationConfig {
     private final Boolean ignorePreviousFailures = false;
     @NonNull
     @Builder.Default
+    private final Boolean allowOlderVersions = false;
+    @NonNull
+    @Builder.Default
     private final Integer backoffPeriodInMillis = 30000;
     @NonNull
     @Builder.Default

@@ -54,6 +54,7 @@ public class ElasticsearchMigration {
                 elasticsearchMigrationConfig.getIdentifier(),
                 createElasticsearchClient(elasticsearchMigrationConfig.getElasticsearchConfig()),
                 elasticsearchMigrationConfig.getIgnorePreviousFailures(),
+                elasticsearchMigrationConfig.getAllowOlderVersions(),
                 elasticsearchMigrationConfig.getBackoffPeriodInMillis(),
                 elasticsearchMigrationConfig.getRetryCount()
         );
