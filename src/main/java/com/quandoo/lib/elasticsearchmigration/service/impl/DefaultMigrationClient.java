@@ -270,11 +270,7 @@ public class DefaultMigrationClient implements MigrationClient {
     }
 
     private void checkForMetadataConflicts(final List<MigrationEntry> migrationEntries, final List<MigrationMeta> migrationMetas) {
-        if (migrationMetas.size() < migrationEntries.stream().filter(e -> State.SUCCESS == e.getState()).count()) {
-            throw new MigrationFailedException("Local migration set smaller then one found in ES. Local migration set: " + migrationMetas.size() + ", ES migration set: " + migrationEntries.size());
-        }
-
-        for (int i = 0; i < migrationEntries.size(); i++) {
+        for (int i = 0; i < Math.min(migrationEntries.size(), migrationMetas.size()); i++) {
             if (!migrationEntries.get(i).getVersion().equals(migrationMetas.get(i).getVersion())) {
                 throw new MigrationFailedException("Version mismatch for " + migrationMetas.get(i).getName() + ". Local version: " + migrationMetas.get(i).getVersion() + ", ES version: " + migrationEntries.get(i).getVersion());
             } else if (!migrationEntries.get(i).getSha256Checksum().equals(migrationMetas.get(i).getSha256Checksum())) {
@@ -285,6 +281,10 @@ public class DefaultMigrationClient implements MigrationClient {
         }
 
         if(!allowOlderVersions) {
+            if (migrationMetas.size() < migrationEntries.stream().filter(e -> State.SUCCESS == e.getState()).count()) {
+                throw new MigrationFailedException("Local migration set smaller then one found in ES. Local migration set: " + migrationMetas.size() + ", ES migration set: " + migrationEntries.size());
+            }
+
             final Optional<MigrationEntry> lastMigrationEntry = Optional.ofNullable(Iterables.getLast(migrationEntries, null));
             for (int i = migrationEntries.size(); i < migrationMetas.size(); i++) {
                 if (lastMigrationEntry.isPresent() && new VersionComparator<String>(VERSION_REGEX_PATTERN, 1, ".", e -> e).compare(lastMigrationEntry.get().getVersion(), migrationMetas.get(i).getVersion()) >= 0) {

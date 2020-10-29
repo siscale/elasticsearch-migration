@@ -480,6 +480,32 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     }
 
     @Test
+    public void testLocalChangeSetSmallerMigrationFailedIgnore() {
+
+        final DefaultMigrationClient defaultMigrationClient = createClient(false, true);
+        defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
+
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+        indexDocument(MigrationEntryMeta.INDEX, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
+
+        final MigrationSet migrationSet = new MigrationSet(
+                ImmutableList.of(
+                        new MigrationSetEntry(
+                                ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
+                                new MigrationMeta(
+                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
+                                        "1.0.0",
+                                        "singularity"
+                                )
+
+                        )
+                )
+        );
+
+        defaultMigrationClient.applyMigrationSet(migrationSet);
+    }
+
+    @Test
     public void testPreviousMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
@@ -659,34 +685,6 @@ public class DefaultMigrationClientIntegrationTest extends AbstractESTest {
     public void testLocalChangeSetSmallerMigrationFailedException() {
 
         final DefaultMigrationClient defaultMigrationClient = createClient(false, false);
-        defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
-
-        indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
-        indexDocument(MigrationEntryMeta.INDEX, "test-1.1.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
-
-        final MigrationSet migrationSet = new MigrationSet(
-                ImmutableList.of(
-                        new MigrationSetEntry(
-                                ImmutableList.of(new CreateIndexMigration("test_index", loadResource("create_index.json"))),
-                                new MigrationMeta(
-                                        "10d798ee9a8265432b6b9c621adeec1eb5ae9a79a6d5c3a684e06e6021163007",
-                                        "1.0.0",
-                                        "singularity"
-                                )
-
-                        )
-                )
-        );
-
-        assertThrows(MigrationFailedException.class, () -> {
-            defaultMigrationClient.applyMigrationSet(migrationSet);
-        });
-    }
-
-    @Test
-    public void testLocalChangeSetSmallerMigrationFailedIgnore() {
-
-        final DefaultMigrationClient defaultMigrationClient = createClient(false, true);
         defaultMigrationClient.applyMigrationSet(new MigrationSet(Collections.emptyList()));
 
         indexDocument(MigrationEntryMeta.INDEX, "test-1.0.0", loadResource("successful_elasticsearchmigration_version_entry.json"));
