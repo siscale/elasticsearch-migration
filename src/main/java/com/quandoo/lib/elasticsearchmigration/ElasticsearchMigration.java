@@ -31,10 +31,25 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 
+import javax.net.ssl.SSLContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +63,7 @@ public class ElasticsearchMigration {
     private final MigrationClient migrationClient;
     private final MigrationSetProvider migrationSetProvider;
 
-    public ElasticsearchMigration(@NonNull final ElasticsearchMigrationConfig elasticsearchMigrationConfig) {
+    public ElasticsearchMigration(@NonNull final ElasticsearchMigrationConfig elasticsearchMigrationConfig) throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         this.elasticsearchMigrationConfig = elasticsearchMigrationConfig;
         this.migrationClient = new DefaultMigrationClient(
                 elasticsearchMigrationConfig.getIdentifier(),
@@ -61,7 +76,7 @@ public class ElasticsearchMigration {
         this.migrationSetProvider = new YamlDirectoryMigrationSetProvider();
     }
 
-    private RestHighLevelClient createElasticsearchClient(ElasticsearchConfig elasticsearchConfig) {
+    private RestHighLevelClient createElasticsearchClient(ElasticsearchConfig elasticsearchConfig) throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
 
 
         final RestClientBuilder builder = RestClient.builder(
@@ -76,6 +91,26 @@ public class ElasticsearchMigration {
         }
 
         builder.setDefaultHeaders(elasticsearchConfig.getHeaders().entries().stream().map(e -> new BasicHeader(e.getKey(), e.getValue())).toArray(Header[]::new));
+
+        Path caCertificatePath = Paths.get("/Users/popescub/personal/siscale/elasticsearch-migration/src/test/resources/ca.crt");
+        CertificateFactory factory =
+                CertificateFactory.getInstance("X.509");
+        Certificate trustedCa;
+        try (InputStream is = Files.newInputStream(caCertificatePath)) {
+            trustedCa = factory.generateCertificate(is);
+        }
+        KeyStore trustStore = KeyStore.getInstance("pkcs12");
+        trustStore.load(null, null);
+        trustStore.setCertificateEntry("ca", trustedCa);
+        SSLContextBuilder sslContextBuilder = SSLContexts.custom().loadTrustMaterial(trustStore, null);
+        final SSLContext sslContext = sslContextBuilder.build();
+        builder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+                    @Override
+                    public HttpAsyncClientBuilder customizeHttpClient(
+                            HttpAsyncClientBuilder httpClientBuilder) {
+                        return httpClientBuilder.setSSLContext(sslContext);
+                    }
+                });
 
         if (elasticsearchConfig.getPathPrefix() != null) {
             builder.setPathPrefix(elasticsearchConfig.getPathPrefix());

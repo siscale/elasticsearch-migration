@@ -22,6 +22,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
@@ -36,9 +40,12 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 public class ElasticsearchMigrationIntegrationTest extends AbstractESTest {
 
     @Test
-    public void testMigrate() throws IOException, InterruptedException, ExecutionException {
+    public void testMigrate() throws IOException, InterruptedException, ExecutionException, CertificateException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         final ElasticsearchMigration elasticsearchMigration = new ElasticsearchMigration(
-                ElasticsearchMigrationConfig.builder("test", ElasticsearchConfig.builder(new URL("http://localhost:9200")).build()).basePackage("changeset").build()
+                ElasticsearchMigrationConfig.builder("test", ElasticsearchConfig.builder(new URL("http://localhost:9200"))
+                        .username("elastic")
+                        .password("qwerty123")
+                        .build()).basePackage("changeset").build()
         );
 
         elasticsearchMigration.migrate();

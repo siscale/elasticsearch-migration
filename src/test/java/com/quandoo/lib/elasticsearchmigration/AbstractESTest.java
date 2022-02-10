@@ -94,7 +94,7 @@ public abstract class AbstractESTest {
         esObjectMapper.registerModule(new JavaTimeModule());
     }
 
-    @BeforeEach
+//    @BeforeEach
     public final void initES() throws InterruptedException, IOException {
         client = new RestHighLevelClient(RestClient.builder(HttpHost.create("http://localhost:9200")));
         refreshIndices();

@@ -1,0 +1,30 @@
+migrations:
+  - type: CREATE_INDEX
+    index: 'test_index_1'
+    definition: >
+      {
+          "settings": {
+              "number_of_shards": 3,
+              "number_of_replicas": 2
+          },
+          "mappings": {
+              "dynamic": "strict",
+              "_source": {
+                  "enabled": true
+              },
+              "properties": {
+                  "user": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "post_date": {
+                      "type": "keyword",
+                      "index": true
+                  },
+                  "message": {
+                      "type": "keyword",
+                      "index": true
+                  }
+              }
+          }
+      }

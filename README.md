@@ -258,8 +258,8 @@ migrations:
 ```
 
 ## Usage
-Each service has to define an identitifier which will identify the owner of the indexes, templates, documents etc. and locks in the ES cluster. 
-The easiest way is to give the identifier the service name which ownes it.
+Each service has to define an identifier which will identify the owner of the indexes, templates, documents etc. and locks in the ES cluster. 
+The easiest way is to give the identifier the service name which owns it.
 
 Example:
 ```java
